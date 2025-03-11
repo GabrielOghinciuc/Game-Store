@@ -1,1 +1,84 @@
-/* You can add global styles to this file, and also import other style files */
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the theme object.
+$game-store-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+:root {
+  @include mat.all-component-themes($game-store-theme);
+}
+
+// Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($game-store-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($game-store-theme);
+@import 'bootstrap/scss/bootstrap';
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  
+  body.dark-mode .navbar {
+    background-color: #222;
+    color: #fff;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  
+  body.dark-mode .card {
+    background-color: #424242;
+    color: #e0e0e0;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  
+  body.dark-mode .btn-primary {
+    background-color: #e20c0c;
+    border-color: #bb86fc;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+  }
+  
+  body.dark-mode .navbar-dark .navbar-brand {
+    color: #fff;
+    transition: color 0.4s ease;
+  }  
+
+  body.dark-mode footer {
+    background-color: #222;
+    color: #fff;
+  }
+
+body.dark-mode footer .nav-link:hover {
+  color: #fff;
+}
+body.dark-mode footer .nav-link {
+  color: #bbb;
+}
+footer {
+  width: 100%;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,0 +1,26 @@
+footer {
+  width: 100%;
+  background-color: #f8f9fa; 
+  color: #6c757d; 
+}
+
+footer a {
+  color: #6c757d;
+}
+
+body.dark-mode footer {
+  background-color: #222;
+  color: #e0e0e0;
+}
+
+body.dark-mode footer a {
+  color: #bb86fc;
+}
+
+body.dark-mode footer a:hover {
+  color: #ffffff;
+}
+
+body.dark-mode footer .text-center.p-4 {
+  background-color: rgba(255, 255, 255, 0.1);
+}

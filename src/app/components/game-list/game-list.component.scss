@@ -1,0 +1,22 @@
+
+  
+  .card-img-top {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  
+  .card-text {
+    margin-bottom: 1rem;
+  }
+  
+  .btn {
+    align-self: flex-start;
+  }

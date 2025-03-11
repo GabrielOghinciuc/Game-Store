@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <h2 class="text-center">Games</h2>
+  <input type="text" [(ngModel)]="searchTerm" (input)="filterGames()" placeholder="Search games...">
+
+  <div class="row">
+    <div class="col-md-4" *ngFor="let game of filteredGames; let i = index">
+      <div class="card mb-4">
+        <img [src]="game.image" class="card-img-top game-image" alt="{{ game.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ game.name }}</h5>
+          <p class="card-text">
+            {{ game.showFullDescription ? game.description : (game.description | slice:0:100) + (game.description.length > 100 ? '...' : '') }}
+          </p>
+          <a *ngIf="game.description.length > 100" href="#" (click)="toggleDescription(game); $event.preventDefault()">
+            {{ game.showFullDescription ? 'see less...' : 'see more...' }}
+          </a>
+          <p *ngIf="game.originalPrice && game.discountedPrice">
+            <span style="text-decoration: line-through; color: red;">
+              Price: ${{ game.originalPrice }}
+            </span>
+            <span style="font-size: 1.2em; color: green; margin-left: 10px;">
+              ${{ game.discountedPrice }}
+            </span>
+          </p>
+          <p *ngIf="!game.discountedPrice">
+            <span>Price: ${{ game.originalPrice }}</span>
+          </p>
+          <a href="#" class="btn btn-primary">Buy Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" *ngFor="let page of pageNumbers">
+        <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+      </li>
+    </ul>
+  </nav>
+</div>
