@@ -1,0 +1,85 @@
+<div class="container mt-4">
+    <div *ngIf="showErrors" class="alert alert-danger">
+      <h4>Please fix the following errors:</h4>
+      <ul>
+        <li *ngIf="gameForm.get('name')?.errors?.['required']">Game name is required</li>
+        <li *ngIf="gameForm.get('description')?.errors?.['required']">Description is required</li>
+        <li *ngIf="gameForm.get('image')?.errors?.['required']">Image URL is required</li>
+        <li *ngIf="gameForm.get('originalPrice')?.errors?.['required']">Original price is required</li>
+        <li *ngIf="gameForm.get('originalPrice')?.errors?.['min']">Original price must be greater than 0</li>
+        <li *ngIf="gameForm.get('discountedPrice')?.errors?.['required']">Discounted price is required</li>
+        <li *ngIf="gameForm.get('discountedPrice')?.errors?.['min']">Discounted price must be greater than 0</li>
+      </ul>
+    </div>
+  
+    <h2>Add New Game</h2>
+    <form [formGroup]="gameForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="name" class="form-label">Game Name</label>
+        <input type="text" 
+               class="form-control" 
+               [class.is-invalid]="gameForm.get('name')?.invalid && gameForm.get('name')?.touched"
+               id="name" 
+               formControlName="name">
+        <div class="invalid-feedback" *ngIf="gameForm.get('name')?.invalid && gameForm.get('name')?.touched">
+          Game name is required
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control"
+                  [class.is-invalid]="gameForm.get('description')?.invalid && gameForm.get('description')?.touched"
+                  id="description" 
+                  formControlName="description"></textarea>
+        <div class="invalid-feedback" *ngIf="gameForm.get('description')?.invalid && gameForm.get('description')?.touched">
+          Description is required
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="image" class="form-label">Image URL</label>
+        <input type="text" 
+               class="form-control"
+               [class.is-invalid]="gameForm.get('image')?.invalid && gameForm.get('image')?.touched"
+               id="image" 
+               formControlName="image">
+        <div class="invalid-feedback" *ngIf="gameForm.get('image')?.invalid && gameForm.get('image')?.touched">
+          Image URL is required
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="originalPrice" class="form-label">Original Price</label>
+        <input type="number" 
+               class="form-control"
+               [class.is-invalid]="gameForm.get('originalPrice')?.invalid && gameForm.get('originalPrice')?.touched"
+               id="originalPrice" 
+               formControlName="originalPrice">
+        <div class="invalid-feedback" *ngIf="gameForm.get('originalPrice')?.invalid && gameForm.get('originalPrice')?.touched">
+          <span *ngIf="gameForm.get('originalPrice')?.errors?.['required']">Original price is required</span>
+          <span *ngIf="gameForm.get('originalPrice')?.errors?.['min']">Original price must be greater than 0</span>
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="discountedPrice" class="form-label">Discounted Price</label>
+        <input type="number" 
+               class="form-control"
+               [class.is-invalid]="gameForm.get('discountedPrice')?.invalid && gameForm.get('discountedPrice')?.touched"
+               id="discountedPrice" 
+               formControlName="discountedPrice">
+        <div class="invalid-feedback" *ngIf="gameForm.get('discountedPrice')?.invalid && gameForm.get('discountedPrice')?.touched">
+          <span *ngIf="gameForm.get('discountedPrice')?.errors?.['required']">Discounted price is required</span>
+          <span *ngIf="gameForm.get('discountedPrice')?.errors?.['min']">Discounted price must be greater than 0</span>
+        </div>
+      </div>
+  
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="showOnFirstPage" formControlName="showOnFirstPage">
+        <label class="form-check-label" for="showOnFirstPage">Show this game on homepage</label>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="!gameForm.valid">Add Game</button>
+    </form>
+  </div>

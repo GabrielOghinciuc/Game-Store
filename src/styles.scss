@@ -1,6 +1,4 @@
-
 // Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 // Plus imports for other components in your app.
 
@@ -81,4 +79,13 @@ footer {
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  padding-top: 56px;
+  min-height: 100vh;
+}
+
+.main-content {
+  min-height: calc(100vh - 56px);
+}

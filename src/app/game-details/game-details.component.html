@@ -1,0 +1,58 @@
+<div class="game-details card shadow-lg mt-5" *ngIf="game">
+    <div class="row g-0">
+      <div class="col-md-5 d-flex justify-content-center align-items-center">
+        <img [src]="game.image" [alt]="game.name" class="game-image img-fluid">
+      </div>
+      <div class="col-md-7">
+        <div class="card-body">
+          <h2 class="card-title">{{ game.name }}</h2>
+          <p class="card-text">{{ game.description }}</p>
+          
+          <div class="genre-section mb-3">
+            <p class="genre-title mb-2">Genre:</p>
+            <p class="genre">{{ game.genre }}</p>
+          </div>
+  
+          <div class="platforms-section mb-3">
+            <p class="platforms-title mb-2">Available on:</p>
+            <div class="platforms-list">
+              <span class="platform-badge" *ngFor="let platform of game.platforms">
+                {{ platform }}
+              </span>
+            </div>
+          </div>
+  
+          <div class="rating-section">
+            <p class="rating">Rating:</p>
+            <div class="stars">
+              <span *ngFor="let star of [1,2,3,4,5]" 
+                    class="star"
+                    [class.filled]="star <= (hoverRating || game.rating || 0)"
+                    [class.hovered]="star <= hoverRating"
+                    (click)="setRating(star)"
+                    (mouseenter)="onStarHover(star)"
+                    (mouseleave)="onStarLeave()">
+                ★
+              </span>
+            </div>
+          </div>
+          
+          <div class="price-section">
+            <p class="original-price">Regular price: ${{ game.originalPrice }}</p>
+            <p *ngIf="game.discountedPrice && game.discountedPrice < game.originalPrice" class="discounted-price">
+              Sale price: ${{ game.discountedPrice }}
+            </p>
+            <button class="btn btn-primary">
+              <i class="bi bi-cart-plus-fill"></i>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="alert alert-warning text-center error-message" *ngIf="!game">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <p class="mb-0">Game not found!</p>
+  </div>

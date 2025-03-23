@@ -1,46 +1,118 @@
+<div class="drop-indicator" [class.active]="isDropping">
+  <i class="fas fa-gamepad"></i>
+</div>
+
+<div class="preview bg-purple">
+  <div class="container">
+    <div class="row align-items-center py-5">
+      <div class="col-12 col-lg-6 pe-lg-5">
+        <h2 class="text-white mb-5 display-2 fw-bold">Welcome to StimGames</h2>
+        <p class="text-white mb-5 lead px-2">
+          Discover amazing games at incredible prices. Browse through our extensive collection 
+          of latest releases and classic titles. Don't miss out on exclusive deals and special offers!
+        </p>
+        <div class="mt-5">
+          <button [routerLink]="['/games']" class="btn btn-light me-4 px-5 py-3">See All Games</button>
+          <button (click)="scrollToPopular()" class="btn btn-outline-light px-5 py-3">See Best Offers</button>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center d-none d-lg-block">
+        <img src="tfs.png" alt="TFS Logo" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="platforms-section py-5">
+  <div class="container">
+    <h3 class="text-center mb-4">What we offer</h3>
+    <div class="row g-4">
+      <div class="col-md-4 col-lg-2 platform-box">
+        <div class="platform-content">
+          <i class="fas fa-desktop mb-3"></i>
+          <h5>PC</h5>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2 platform-box">
+        <div class="platform-content">
+          <i class="fab fa-xbox mb-3"></i>
+          <h5>Xbox One</h5>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2 platform-box">
+        <div class="platform-content">
+          <i class="fab fa-playstation mb-3"></i>
+          <h5>PS5</h5>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2 platform-box">
+        <div class="platform-content">
+          <i class="fab fa-playstation mb-3"></i>
+          <h5>PS4</h5>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2 platform-box">
+        <div class="platform-content">
+          <i class="fas fa-gamepad mb-3"></i>
+          <h5>Nintendo Switch</h5>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2 platform-box cs-box">
+        <div class="platform-content">
+          <i class="fas fa-box-open mb-3"></i>
+          <h5>CS2 Cases</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
 <div class="container mt-4">
   <app-carousel></app-carousel>
 
     <div class="col-md-12">
       <div class="row">
         @for (game of games; track $index) {
-          <div class="col-md-4 mb-4">
-            <div class="card h-100">
-              <img [src]="game.image" class="card-img-top fixed-image" alt="{{ game.name }}">
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ game.name }}</h5>
-                
-                <p class="card-text flex-grow-1">
-                  {{ game.showFullDescription ? game.description : (game.description | slice:0:100) + (game.description.length > 100 ? '...' : '') }}
-                </p>
+          @if (game.showOnFirstPage) {
+            <div class="col-md-4 mb-4">
+              <div class="card h-100">
+                <img [src]="game.image" class="card-img-top fixed-image" alt="{{ game.name }}">
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">{{ game.name }}</h5>
+                  
+                  <p class="card-text flex-grow-1">
+                    {{ game.showFullDescription ? game.description : (game.description | slice:0:100) + (game.description.length > 100 ? '...' : '') }}
+                  </p>
 
-                @if (game.description.length > 100) {
-                  <a href="#" (click)="toggleDescription(game); $event.preventDefault()" class="d-block mb-2">
-                    {{ game.showFullDescription ? 'see less...' : 'see more...' }}
-                  </a>
-                }
-
-                <div class="price-section">
-                  @if (game.discountedPrice) {
-                    <p class="mb-1">
-                      <span class="text-decoration-line-through text-danger">
-                        ${{ game.originalPrice }}
-                      </span>
-                      <span class="fs-5 text-success ms-2">
-                        ${{ game.discountedPrice }}
-                      </span>
-                    </p>
-                  } @else {
-                    <p class="mb-2">
-                      <span>Price: ${{ game.originalPrice }}</span>
-                    </p>
+                  @if (game.description.length > 100) {
+                    <a href="#" (click)="toggleDescription(game); $event.preventDefault()" class="d-block mb-2">
+                      {{ game.showFullDescription ? 'see less...' : 'see more...' }}
+                    </a>
                   }
-                </div>
 
-                <a href="#" class="btn btn-primary w-100">Buy Now</a>
+                  <div class="price-section">
+                    @if (game.discountedPrice) {
+                      <p class="mb-1">
+                        <span class="text-decoration-line-through text-danger">
+                          ${{ game.originalPrice }}
+                        </span>
+                        <span class="fs-5 text-success ms-2">
+                          ${{ game.discountedPrice }}
+                        </span>
+                      </p>
+                    } @else {
+                      <p class="mb-2">
+                        <span>Price: ${{ game.originalPrice }}</span>
+                      </p>
+                    }
+                  </div>
+
+                  <a href="#" class="btn btn-primary w-100">Buy Now</a>
+                  <button [routerLink]="['/games/details', game.id]" class="btn btn-secondary w-100 mt-2">Details</button>
+                </div>
               </div>
             </div>
-          </div>
+          }
         }
       </div>
     </div>

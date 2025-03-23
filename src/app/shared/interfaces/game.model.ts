@@ -4,7 +4,10 @@ export interface Game {
   description: string;
   image: string;
   originalPrice: number;
-  discountedPrice: number;
-  showFullDescription: boolean;
-  showOnFirstPage: boolean;
+  discountedPrice?: number;
+  platforms: string[];
+  genre?: string;
+  showOnFirstPage?: boolean;
+  showFullDescription?: boolean;
+  rating?: number;
 }
