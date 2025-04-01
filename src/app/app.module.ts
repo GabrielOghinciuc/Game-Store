@@ -24,9 +24,10 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { GameDetailsComponent } from './game-details/game-details.component';
-import { GameService } from './shared/services/game.service';
-import { GameAddComponent } from './game-add/game-add.component';
+import { GameDetailsComponent } from './components/game-details/game-details.component';
+//import { GameService } from './shared/services/game.service';
+import { GameAddComponent } from './components/game-add/game-add.component';
+import { GameEditComponent } from './components/game-edit/game-edit.component';
 
 @NgModule({
   declarations: [
@@ -39,24 +40,24 @@ import { GameAddComponent } from './game-add/game-add.component';
     GamesComponent,
     GameDetailsComponent,
     GameAddComponent,
+    GameEditComponent,
   ],
   imports: [
-    MatSlideToggleModule,
     BrowserModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    BrowserAnimationsModule,
+    MatSlideToggleModule,
     FormsModule,
     AppRoutingModule,
     NgbModule,
-    FormsModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
     AsyncPipe,
-    MatInputModule,
-    BrowserAnimationsModule,
     MatIconModule,
-    HttpClientModule,
     MatFormFieldModule,
   ],
-  providers: [provideClientHydration(), provideAnimationsAsync(), GameService],
+  providers: [provideClientHydration(), provideAnimationsAsync()],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

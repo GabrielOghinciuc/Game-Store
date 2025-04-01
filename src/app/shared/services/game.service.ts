@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+/*import { Injectable } from '@angular/core';
 import { Game } from '../interfaces/game.model';
 
 @Injectable({
@@ -294,11 +294,11 @@ export class GameService {
     },
   ];
 
-  getGames(): Game[] {
+  public getGames(): Game[] {
     return this.games;
   }
 
-  addGame(game: Game) {
+  public addGame(game: Game) {
     const newId = Math.max(...this.games.map((g) => g.id)) + 1;
     const newGame = {
       ...game,
@@ -310,15 +310,15 @@ export class GameService {
     return newGame;
   }
 
-  getGameById(id: number): Game | undefined {
+  public getGameById(id: number): Game | undefined {
     return this.games.find((game) => game.id === id);
   }
 
-  updateGameRating(gameId: number, rating: number): Game | undefined {
+  public updateGameRating(gameId: number, rating: number): Game | undefined {
     const game = this.games.find((g) => g.id === gameId);
     if (game) {
       game.rating = rating;
     }
     return game;
   }
-}
+}*/

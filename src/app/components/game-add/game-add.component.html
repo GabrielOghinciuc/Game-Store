@@ -1,16 +1,5 @@
-<div class="container mt-4">
-    <div *ngIf="showErrors" class="alert alert-danger">
-      <h4>Please fix the following errors:</h4>
-      <ul>
-        <li *ngIf="gameForm.get('name')?.errors?.['required']">Game name is required</li>
-        <li *ngIf="gameForm.get('description')?.errors?.['required']">Description is required</li>
-        <li *ngIf="gameForm.get('image')?.errors?.['required']">Image URL is required</li>
-        <li *ngIf="gameForm.get('originalPrice')?.errors?.['required']">Original price is required</li>
-        <li *ngIf="gameForm.get('originalPrice')?.errors?.['min']">Original price must be greater than 0</li>
-        <li *ngIf="gameForm.get('discountedPrice')?.errors?.['required']">Discounted price is required</li>
-        <li *ngIf="gameForm.get('discountedPrice')?.errors?.['min']">Discounted price must be greater than 0</li>
-      </ul>
-    </div>
+<div class="container" style="margin-top: 70px;">
+    
   
     <h2>Add New Game</h2>
     <form [formGroup]="gameForm" (ngSubmit)="onSubmit()">
@@ -70,16 +59,59 @@
                id="discountedPrice" 
                formControlName="discountedPrice">
         <div class="invalid-feedback" *ngIf="gameForm.get('discountedPrice')?.invalid && gameForm.get('discountedPrice')?.touched">
-          <span *ngIf="gameForm.get('discountedPrice')?.errors?.['required']">Discounted price is required</span>
-          <span *ngIf="gameForm.get('discountedPrice')?.errors?.['min']">Discounted price must be greater than 0</span>
+          <span *ngIf="gameForm.get('discountedPrice')?.errors?.['min']">Discounted price must be greater than or equal to 0</span>
         </div>
       </div>
-  
+
+      <div class="mb-3">
+        <label for="rating" class="form-label">Rating (1-5)</label>
+        <input type="number" 
+               class="form-control"
+               [class.is-invalid]="gameForm.get('rating')?.invalid && gameForm.get('rating')?.touched"
+               id="rating" 
+               formControlName="rating"
+               min="1"
+               max="5">
+        <div class="invalid-feedback" *ngIf="gameForm.get('rating')?.invalid && gameForm.get('rating')?.touched">
+          Rating must be between 1 and 5
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="genre" class="form-label">Genre</label>
+        <input type="text" 
+               class="form-control"
+               [class.is-invalid]="gameForm.get('genre')?.invalid && gameForm.get('genre')?.touched"
+               id="genre" 
+               formControlName="genre">
+        <div class="invalid-feedback" *ngIf="gameForm.get('genre')?.invalid && gameForm.get('genre')?.touched">
+          Genre is required
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="platforms" class="form-label">Platforms (comma-separated)</label>
+        <input type="text" 
+               class="form-control"
+               [class.is-invalid]="gameForm.get('platforms')?.invalid && gameForm.get('platforms')?.touched"
+               id="platforms" 
+               formControlName="platforms"
+               placeholder="PC, PS5, Xbox">
+        <div class="invalid-feedback" *ngIf="gameForm.get('platforms')?.invalid && gameForm.get('platforms')?.touched">
+          At least one platform is required
+        </div>
+      </div>
+
       <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="showOnFirstPage" formControlName="showOnFirstPage">
-        <label class="form-check-label" for="showOnFirstPage">Show this game on homepage</label>
+        <label class="form-check-label" for="showOnFirstPage">Show on homepage</label>
       </div>
-  
-      <button type="submit" class="btn btn-primary" [disabled]="!gameForm.valid">Add Game</button>
+
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="showFullDescription" formControlName="showFullDescription">
+        <label class="form-check-label" for="showFullDescription">Show full description</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Add Game</button>
     </form>
   </div>

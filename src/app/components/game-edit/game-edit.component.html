@@ -1,0 +1,58 @@
+<div class="container mt-4">
+  <div class="card" *ngIf="game">
+    <div class="card-header">
+      <h3>Edit Game</h3>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" [(ngModel)]="game.name" name="name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" [(ngModel)]="game.description" name="description" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Image URL</label>
+          <input type="text" class="form-control" [(ngModel)]="game.image" name="image">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Original Price</label>
+          <input type="number" class="form-control" [(ngModel)]="game.originalPrice" name="originalPrice">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Discounted Price</label>
+          <input type="number" class="form-control" [(ngModel)]="game.discountedPrice" name="discountedPrice">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Rating</label>
+          <input type="number" class="form-control" [(ngModel)]="game.rating" name="rating" min="0" max="5">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Platforms (comma-separated)</label>
+          <input type="text" class="form-control" [(ngModel)]="platformsString" (change)="updatePlatforms($event)" name="platforms">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Genre</label>
+          <input type="text" class="form-control" [(ngModel)]="game.genre" name="genre">
+        </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" [(ngModel)]="game.showFullDescription" name="showFullDescription" id="showFullDescription">
+          <label class="form-check-label" for="showFullDescription">Show Full Description</label>
+        </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" [(ngModel)]="game.showOnFirstPage" name="showOnFirstPage" id="showOnFirstPage">
+          <label class="form-check-label" for="showOnFirstPage">Show on First Page</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </div>
+  <div *ngIf="isLoading" class="text-center mt-4">
+    <div class="spinner-border"></div>
+  </div>
+  <div *ngIf="error" class="alert alert-danger mt-4">
+    {{error}}
+  </div>
+</div>

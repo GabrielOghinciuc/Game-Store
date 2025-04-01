@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Game } from '../../shared/interfaces/game.model';
-import { GameService } from '../../shared/services/game.service';
-import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-game-list',
@@ -9,23 +10,38 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./game-list.component.scss'],
 })
 export class GameListComponent implements OnInit {
-  games: Game[] = [];
+  public games: Game[] = [];
   public gamesLoaded = false;
-  isDropping = false;
+  public isDropping = false;
 
-  constructor(private gameService: GameService) {
-    setTimeout(() => {
-      this.gamesLoaded = true;
-    }, 2000);
-  }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    const allGames = this.gameService.getGames();
-    this.games = allGames.filter((game) => game.showOnFirstPage);
+    this.gamesLoaded = false;
+    this.http
+      .get<Game[]>('https://localhost:7262/Games/featured-games')
+      .subscribe({
+        next: (data) => {
+          this.games = data;
+          this.games.forEach((game) => {
+            game.showFullDescription = false;
+          });
+          this.gamesLoaded = true;
+        },
+        error: (error) => {
+          console.error('Error fetching featured games:', error);
+          this.gamesLoaded = true;
+        },
+      });
   }
 
   toggleDescription(game: Game): void {
     game.showFullDescription = !game.showFullDescription;
+    this.cdr.markForCheck();
   }
 
   getShortDescription(description: string): string {
@@ -40,22 +56,29 @@ export class GameListComponent implements OnInit {
     const target = document.querySelector('app-carousel') as HTMLElement;
 
     if (indicator && target) {
-      // Calculate distance to scroll
       const distance = target.getBoundingClientRect().top - window.scrollY;
       indicator.style.setProperty('--scroll-distance', `${distance}px`);
 
-      // Start animation
       this.isDropping = true;
 
-      // Wait for animation to complete then scroll
       setTimeout(() => {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        // Reset animation state
         setTimeout(() => {
           this.isDropping = false;
         }, 800);
       }, 400);
     }
+  }
+
+  public viewGameDetails(gameId: number): void {
+    this.http.get<Game>(`https://localhost:7262/Games/${gameId}`).subscribe({
+      next: (game) => {
+        this.router.navigate(['/games/details', gameId]);
+      },
+      error: (error) => {
+        console.error('Error loading game details:', error);
+      },
+    });
   }
 }

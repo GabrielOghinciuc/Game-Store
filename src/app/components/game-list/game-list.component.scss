@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  padding-top: 50px;
+}
+
 .card-img-top {
   width: 100%;
   height: 180px;
@@ -25,9 +30,46 @@ background-color: #6f42c1;
 }
 
 .preview {
-margin-bottom: 2rem;
 min-height: 700px; 
-padding: 6rem 0;   
+padding: 2rem 0; 
+margin-top: 0 !important;
+
+@media (max-width: 1200px) {
+  min-height: 600px;
+}
+
+@media (max-width: 992px) {
+  min-height: 500px;
+  
+  h2 {
+    font-size: 3rem !important;
+  }
+  
+  p {
+    font-size: 1.2rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  min-height: 400px;
+  padding: 1rem 0;
+  
+  h2 {
+    font-size: 2.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  p {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .btn {
+    font-size: 1rem !important;
+    padding: 0.5rem 1.5rem !important;
+  }
+}
 }
 
 .preview h2 {
@@ -97,7 +139,6 @@ to {
 
 .drop-indicator {
 position: fixed;
-top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
 z-index: 1000;

@@ -1,38 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Observable, Subscription, of } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  startWith,
+  map,
+} from 'rxjs/operators';
 import { Game } from '../shared/interfaces/game.model';
-import { GameService } from '../shared/services/game.service';
 
 @Component({
   selector: 'app-games',
   templateUrl: './games.component.html',
   styleUrls: ['./games.component.scss'],
 })
-export class GamesComponent implements OnInit {
-  control = new FormControl('');
-  suggest: string[] = [
-    'The Witcher 3',
-    'Cyberpunk 2077',
-    'Red Dead Redemption 2',
-    'Grand Theft Auto V',
-  ];
-  filteredSus: Observable<string[]>;
-  games: Game[] = [];
-  filteredGames: Game[] = [];
-  displayedGames: Game[] = []; // Add this new property
-  currentPage = 1;
-  itemsPerPage = 15;
-  searchTerm: string = '';
-  pageNumbers: number[] = [];
-  errorMessage: string = '';
+export class GamesComponent implements OnInit, OnDestroy {
+  public control = new FormControl('');
+  public filteredSus: Observable<string[]>;
+  public displayedGames: Game[] = [];
+  public pageNumbers: number[] = [1];
+  public errorMessage: string = '';
+  public isLoading: boolean = true;
+  private routerSubscription?: Subscription;
+  private baseUrl = 'https://localhost:7262/Games';
+  private gameNames: string[] = ['Minecraft', 'Counter Strike 2', 'Elden Ring'];
 
-  constructor(private gameService: GameService) {
+  constructor(private http: HttpClient, private router: Router) {
     this.filteredSus = this.control.valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(value || ''))
@@ -40,53 +36,80 @@ export class GamesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.games = this.gameService.getGames();
-    this.filteredGames = this.games;
-    this.calculatePages();
-    this.updateDisplayedGames();
-  }
-
-  calculatePages(): void {
-    const pageCount = Math.ceil(this.filteredGames.length / this.itemsPerPage);
-    this.pageNumbers = Array.from({ length: pageCount }, (_, i) => i + 1);
-  }
-
-  filterGames(): void {
-    if (this.searchTerm) {
-      this.filteredGames = this.games.filter((game) =>
-        game.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    } else {
-      this.filteredGames = this.games;
-    }
-    this.currentPage = 1; // Reset to first page when filtering
-    this.calculatePages();
-    this.updateDisplayedGames();
-  }
-
-  goToPage(page: number): void {
-    this.currentPage = page;
-    this.updateDisplayedGames();
-  }
-
-  updateDisplayedGames(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.displayedGames = this.filteredGames.slice(startIndex, endIndex);
-  }
-
-  toggleDescription(game: Game): void {
-    game.showFullDescription = !game.showFullDescription;
+    this.loadGames();
+    this.setupSearch();
   }
 
   private _filter(value: string): string[] {
     const filterValue = this._normalizeValue(value);
-    return this.suggest.filter((street) =>
-      this._normalizeValue(street).includes(filterValue)
+    return this.gameNames.filter((name) =>
+      this._normalizeValue(name).includes(filterValue)
     );
   }
 
   private _normalizeValue(value: string): string {
     return value.toLowerCase().replace(/\s/g, '');
+  }
+
+  private setupSearch() {
+    this.routerSubscription = this.control.valueChanges
+      .pipe(
+        debounceTime(800),
+        distinctUntilChanged(),
+        switchMap((value) => {
+          this.isLoading = true;
+          if (!value || value.trim() === '') {
+            return this.http.get<Game[]>(`${this.baseUrl}`);
+          }
+          return this.http.get<Game[]>(
+            `${this.baseUrl}/search?query=${value.trim()}`
+          );
+        })
+      )
+      .subscribe({
+        next: (games) => {
+          this.displayedGames = games;
+          this.gameNames = games.map((game) => game.name);
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching games:', error);
+          this.errorMessage = 'Failed to load games';
+          this.isLoading = false;
+        },
+      });
+  }
+
+  public loadGames(): void {
+    this.isLoading = true;
+    this.http.get<Game[]>(`${this.baseUrl}`).subscribe({
+      next: (games) => {
+        this.displayedGames = games;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = 'Failed to load games';
+        this.displayedGames = [];
+        this.isLoading = false;
+      },
+    });
+  }
+
+  public toggleDescription(game: Game): void {
+    game.showFullDescription = !game.showFullDescription;
+  }
+
+  public viewGameDetails(gameId: number): void {
+    this.router.navigate(['/games/details', gameId]);
+  }
+
+  public goToPage(page: number): void {
+    this.loadGames();
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 }

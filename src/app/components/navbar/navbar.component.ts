@@ -7,9 +7,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
-  darkMode = false;
-  buttonText = 'Turn on Dark Mode';
-  isScrolled = false;
+  public darkMode = false;
+  public buttonText = 'Turn on Dark Mode';
+  public isScrolled = false;
 
   constructor(private router: Router) {}
 
@@ -38,7 +38,7 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  isActive(route: string): boolean {
+  public isActive(route: string): boolean {
     return this.router.url === `/${route}`;
   }
 
@@ -51,7 +51,6 @@ export class NavbarComponent implements OnInit {
       .querySelector('footer')
       ?.classList.remove('bg-light', 'text-muted');
 
-    // Add these lines for platforms
     const platformBoxes = document.querySelectorAll(
       '.platform-box:not(.cs-box)'
     );
@@ -77,7 +76,6 @@ export class NavbarComponent implements OnInit {
     document.querySelector('footer')?.classList.add('bg-light', 'text-muted');
     document.querySelector('footer')?.classList.remove('bg-dark', 'text-light');
 
-    // Add these lines for platforms
     const platformBoxes = document.querySelectorAll(
       '.platform-box:not(.cs-box)'
     );

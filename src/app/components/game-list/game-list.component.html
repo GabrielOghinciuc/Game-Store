@@ -1,10 +1,10 @@
-<div class="drop-indicator" [class.active]="isDropping">
+<div class="drop-indicator" [class.active]="isDropping" style="margin-top: 76px;">
   <i class="fas fa-gamepad"></i>
 </div>
 
-<div class="preview bg-purple">
+<div class="preview bg-purple" >
   <div class="container">
-    <div class="row align-items-center py-5">
+    <div class="row align-items-center py-10">
       <div class="col-12 col-lg-6 pe-lg-5">
         <h2 class="text-white mb-5 display-2 fw-bold">Welcome to StimGames</h2>
         <p class="text-white mb-5 lead px-2">
@@ -72,8 +72,14 @@
 
     <div class="col-md-12">
       <div class="row">
-        @for (game of games; track $index) {
-          @if (game.showOnFirstPage) {
+        @if (!gamesLoaded) {
+          <div class="col-12 text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        } @else {
+          @for (game of games; track $index) {
             <div class="col-md-4 mb-4">
               <div class="card h-100">
                 <img [src]="game.image" class="card-img-top fixed-image" alt="{{ game.name }}">
@@ -108,7 +114,7 @@
                   </div>
 
                   <a href="#" class="btn btn-primary w-100">Buy Now</a>
-                  <button [routerLink]="['/games/details', game.id]" class="btn btn-secondary w-100 mt-2">Details</button>
+                  <button (click)="viewGameDetails(game.id)" class="btn btn-secondary w-100 mt-2">Details</button>
                 </div>
               </div>
             </div>

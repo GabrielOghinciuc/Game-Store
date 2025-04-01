@@ -78,7 +78,11 @@ footer {
   width: 100%;
 }
 
-html, body { height: 100%; }
+html, body { 
+  height: 100%; 
+  font-size: 90%; // This will create a slight zoom-out effect
+}
+
 body { 
   margin: 0; 
   font-family: Roboto, "Helvetica Neue", sans-serif; 
