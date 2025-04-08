@@ -4,7 +4,7 @@ import { Game } from '../../shared/interfaces/game.model';
 import { HttpClient } from '@angular/common/http';
 import { GameUpdateService } from '../../shared/services/game-update.service';
 import Swal from 'sweetalert2';
-
+import { RatingComponent } from '../rating/rating.component';
 @Component({
   selector: 'app-game-details',
   templateUrl: './game-details.component.html',
@@ -61,15 +61,19 @@ export class GameDetailsComponent implements OnInit {
 
   public setRating(rating: number): void {
     if (this.game) {
+      this.http
+        .put(`https://localhost:7262/Games/${this.game.id}/rating`, { rating })
+        .subscribe({
+          next: () => {
+            if (this.game) {
+              this.game.rating = rating;
+            }
+          },
+          error: (error) => {
+            console.error('Error updating rating:', error);
+          },
+        });
     }
-  }
-
-  public onStarHover(rating: number): void {
-    this.hoverRating = rating;
-  }
-
-  public onStarLeave(): void {
-    this.hoverRating = 0;
   }
 
   public navigateToEdit(): void {

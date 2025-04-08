@@ -11,6 +11,7 @@ import {
   map,
 } from 'rxjs/operators';
 import { Game } from '../shared/interfaces/game.model';
+import { extractErrors } from '../shared/functions/extractErrors';
 
 @Component({
   selector: 'app-games',
@@ -24,6 +25,7 @@ export class GamesComponent implements OnInit, OnDestroy {
   public pageNumbers: number[] = [1];
   public errorMessage: string = '';
   public isLoading: boolean = true;
+  public errorMessages: string[] = [];
   private routerSubscription?: Subscription;
   private baseUrl = 'https://localhost:7262/Games';
   private gameNames: string[] = ['Minecraft', 'Counter Strike 2', 'Elden Ring'];
@@ -51,6 +53,12 @@ export class GamesComponent implements OnInit, OnDestroy {
     return value.toLowerCase().replace(/\s/g, '');
   }
 
+  private handleError(error: any) {
+    console.error('Error:', error);
+    this.errorMessages = extractErrors(error);
+    this.isLoading = false;
+  }
+
   private setupSearch() {
     this.routerSubscription = this.control.valueChanges
       .pipe(
@@ -58,6 +66,7 @@ export class GamesComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         switchMap((value) => {
           this.isLoading = true;
+          this.errorMessages = []; // reset errors
           if (!value || value.trim() === '') {
             return this.http.get<Game[]>(`${this.baseUrl}`);
           }
@@ -72,25 +81,21 @@ export class GamesComponent implements OnInit, OnDestroy {
           this.gameNames = games.map((game) => game.name);
           this.isLoading = false;
         },
-        error: (error) => {
-          console.error('Error fetching games:', error);
-          this.errorMessage = 'Failed to load games';
-          this.isLoading = false;
-        },
+        error: (error) => this.handleError(error),
       });
   }
 
   public loadGames(): void {
     this.isLoading = true;
+    this.errorMessages = []; // reset errors
     this.http.get<Game[]>(`${this.baseUrl}`).subscribe({
       next: (games) => {
         this.displayedGames = games;
         this.isLoading = false;
       },
       error: (error) => {
-        this.errorMessage = 'Failed to load games';
+        this.handleError(error);
         this.displayedGames = [];
-        this.isLoading = false;
       },
     });
   }
@@ -100,7 +105,12 @@ export class GamesComponent implements OnInit, OnDestroy {
   }
 
   public viewGameDetails(gameId: number): void {
-    this.router.navigate(['/games/details', gameId]);
+    this.http.get<Game>(`${this.baseUrl}/${gameId}`).subscribe({
+      next: (game) => {
+        this.router.navigate(['/games/details', gameId]);
+      },
+      error: (error) => this.handleError(error),
+    });
   }
 
   public goToPage(page: number): void {

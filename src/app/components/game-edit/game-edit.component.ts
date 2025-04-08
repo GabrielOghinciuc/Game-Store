@@ -13,6 +13,7 @@ export class GameEditComponent implements OnInit {
   public isLoading: boolean = true;
   public error: string | null = null;
   public platformsString: string = '';
+  private selectedFile: File | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +26,9 @@ export class GameEditComponent implements OnInit {
     this.http.get<Game>(`https://localhost:7262/Games/${id}`).subscribe({
       next: (game) => {
         this.game = game;
+        if (typeof game.platforms === 'string') {
+          game.platforms = JSON.parse(game.platforms as string);
+        }
         this.platformsString = game.platforms.join(', ');
         this.isLoading = false;
       },
@@ -44,6 +48,10 @@ export class GameEditComponent implements OnInit {
     }
   }
 
+  onImageSelected(file: File) {
+    this.selectedFile = file;
+  }
+
   onSubmit(): void {
     if (!this.game) return;
 
@@ -52,11 +60,30 @@ export class GameEditComponent implements OnInit {
 
     this.updatePlatforms(null);
 
+    const formData = new FormData();
+
+    if (this.selectedFile) {
+      formData.append('picture', this.selectedFile);
+      this.game.image = '/uploads/games/' + this.selectedFile.name;
+    }
+
+    formData.append(
+      'platforms',
+      this.platformsString
+        .split(',')
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0)
+        .join(',')
+    );
+
+    Object.keys(this.game).forEach((key) => {
+      if (key !== 'platforms') {
+        formData.append(key, String(this.game?.[key as keyof Game]));
+      }
+    });
+
     this.http
-      .put<Game>(
-        `https://localhost:7262/Games/edit-game/${this.game.id}`,
-        this.game
-      )
+      .put(`https://localhost:7262/Games/edit-game/${this.game.id}`, formData)
       .subscribe({
         next: () => {
           this.isLoading = false;

@@ -25,9 +25,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { GameDetailsComponent } from './components/game-details/game-details.component';
-//import { GameService } from './shared/services/game.service';
-import { GameAddComponent } from './components/game-add/game-add.component';
 import { GameEditComponent } from './components/game-edit/game-edit.component';
+import { InputImgComponent } from './components/input-img/input-img.component';
+import { GameAddComponent } from './components/game-add/game-add.component';
+import { CardComponent } from './components/card/card.component';
+import { RatingComponent } from './components/rating/rating.component';
+import { DisplayErrorsComponent } from './components/display-errors/display-errors.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -39,8 +43,12 @@ import { GameEditComponent } from './components/game-edit/game-edit.component';
     CarouselComponent,
     GamesComponent,
     GameDetailsComponent,
-    GameAddComponent,
     GameEditComponent,
+    InputImgComponent,
+    GameAddComponent,
+    CardComponent,
+    RatingComponent,
+    DisplayErrorsComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,8 +64,10 @@ import { GameEditComponent } from './components/game-edit/game-edit.component';
     AsyncPipe,
     MatIconModule,
     MatFormFieldModule,
+    CommonModule,
   ],
   providers: [provideClientHydration(), provideAnimationsAsync()],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+console.log('AppModule initialized');

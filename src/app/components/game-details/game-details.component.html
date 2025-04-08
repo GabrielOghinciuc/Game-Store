@@ -24,17 +24,11 @@
   
           <div class="rating-section">
             <p class="rating">Rating:</p>
-            <div class="stars">
-              <span *ngFor="let star of [1,2,3,4,5]" 
-                    class="star"
-                    [class.filled]="star <= (hoverRating || game.rating || 0)"
-                    [class.hovered]="star <= hoverRating"
-                    (click)="setRating(star)"
-                    (mouseenter)="onStarHover(star)"
-                    (mouseleave)="onStarLeave()">
-                ★
-              </span>
-            </div>
+            <app-rating 
+              [maxRating]="5"
+              [selectedRating]="game.rating || 0"
+              (rated)="setRating($event)">
+            </app-rating>
           </div>
           
           <div class="price-section">

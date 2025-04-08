@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { GameDTO } from '../../shared/interfaces/game-dto';
+import { extractErrors } from '../../shared/functions/extractErrors';
 
 @Component({
   selector: 'app-game-add',
@@ -13,6 +15,7 @@ export class GameAddComponent {
   public showErrors = false;
   public apiError: string | null = null;
   public isSubmitting = false;
+  public errors: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -22,7 +25,7 @@ export class GameAddComponent {
     this.gameForm = this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      image: ['', [Validators.required]],
+      picture: [null, [Validators.required]],
       originalPrice: ['', [Validators.required, Validators.min(0.01)]],
       discountedPrice: [0, [Validators.min(0)]],
       rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
@@ -33,30 +36,45 @@ export class GameAddComponent {
     });
   }
 
+  onImageSelected(file: File) {
+    this.gameForm.patchValue({
+      picture: file,
+    });
+  }
+
   public onSubmit() {
     if (this.gameForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       this.apiError = null;
+      this.errors = [];
 
+      const formData = new FormData();
       const formValue = this.gameForm.value;
-      const gameData = {
-        ...formValue,
-        platforms: formValue.platforms
-          .split(',')
-          .map((p: string) => p.trim())
-          .filter((p: string) => p),
-        originalPrice: Number(formValue.originalPrice),
-        discountedPrice: Number(formValue.discountedPrice || 0),
-        rating: Number(formValue.rating),
-      };
 
-      this.http.post('https://localhost:7262/Games', gameData).subscribe({
+      if (formValue.picture) {
+        formData.append('picture', formValue.picture);
+        formData.append('image', '/uploads/games/' + formValue.picture.name);
+      }
+
+      const platforms = formValue.platforms
+        .split(',')
+        .map((p: string) => p.trim())
+        .filter((p: string) => p.length > 0)
+        .join(',');
+      formData.append('platforms', platforms);
+
+      Object.keys(formValue).forEach((key) => {
+        if (key !== 'platforms' && key !== 'picture') {
+          formData.append(key, formValue[key]);
+        }
+      });
+
+      this.http.post('https://localhost:7262/Games', formData).subscribe({
         next: () => {
           this.router.navigate(['/games']);
         },
         error: (error: HttpErrorResponse) => {
-          this.apiError =
-            error.error?.message || 'An error occurred while adding the game';
+          this.errors = extractErrors(error);
           this.isSubmitting = false;
           window.scrollTo(0, 0);
         },

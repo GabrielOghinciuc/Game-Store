@@ -1,10 +1,14 @@
 export interface GameDTO {
-  id: number;
+  id?: number;
   name: string;
-  description: string;
-  image: string;
+  description?: string;
+  image?: string;
+  picture?: File;
   originalPrice: number;
-  discountedPrice: number;
+  discountedPrice?: number;
+  rating: number;
   showFullDescription: boolean;
   showOnFirstPage: boolean;
+  platforms: string[];
+  genre: string;
 }
