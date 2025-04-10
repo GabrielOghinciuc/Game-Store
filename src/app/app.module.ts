@@ -32,6 +32,7 @@ import { CardComponent } from './components/card/card.component';
 import { RatingComponent } from './components/rating/rating.component';
 import { DisplayErrorsComponent } from './components/display-errors/display-errors.component';
 import { CommonModule } from '@angular/common';
+import { ChipComponent } from './components/chip/chip.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { CommonModule } from '@angular/common';
     CardComponent,
     RatingComponent,
     DisplayErrorsComponent,
+    ChipComponent,
   ],
   imports: [
     BrowserModule,

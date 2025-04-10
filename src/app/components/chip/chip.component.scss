@@ -1,0 +1,28 @@
+.chip {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 4px;
+  border-radius: 16px;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #bdbdbd;
+  }
+
+  &.selected {
+    background-color: #2196f3;
+    color: white;
+  }
+}
+
+.badge {
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}

@@ -26,6 +26,20 @@ export class GamesComponent implements OnInit, OnDestroy {
   public errorMessage: string = '';
   public isLoading: boolean = true;
   public errorMessages: string[] = [];
+  public currentPage: number = 1;
+  public totalPages: number = 1;
+  public hasNext: boolean = false;
+  public hasPrevious: boolean = false;
+  public genres: string[] = [
+    'Action',
+    'Adventure',
+    'Horror',
+    'Sport',
+    'Arcade',
+    'Survival',
+    'Indie',
+  ];
+  public selectedGenre: string = '';
   private routerSubscription?: Subscription;
   private baseUrl = 'https://localhost:7262/Games';
   private gameNames: string[] = ['Minecraft', 'Counter Strike 2', 'Elden Ring'];
@@ -66,9 +80,9 @@ export class GamesComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         switchMap((value) => {
           this.isLoading = true;
-          this.errorMessages = []; // reset errors
+          this.errorMessages = [];
           if (!value || value.trim() === '') {
-            return this.http.get<Game[]>(`${this.baseUrl}`);
+            return this.http.get<any>(`${this.baseUrl}/game-list/1`);
           }
           return this.http.get<Game[]>(
             `${this.baseUrl}/search?query=${value.trim()}`
@@ -76,9 +90,22 @@ export class GamesComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe({
-        next: (games) => {
-          this.displayedGames = games;
-          this.gameNames = games.map((game) => game.name);
+        next: (response) => {
+          if (Array.isArray(response)) {
+            this.displayedGames = response;
+            this.gameNames = response.map((game) => game.name);
+          } else {
+            this.displayedGames = response.games;
+            this.currentPage = response.currentPage;
+            this.totalPages = response.totalPages;
+            this.hasNext = response.hasNext;
+            this.hasPrevious = response.hasPrevious;
+            this.pageNumbers = Array.from(
+              { length: this.totalPages },
+              (_, i) => i + 1
+            );
+            this.gameNames = response.games.map((game: Game) => game.name);
+          }
           this.isLoading = false;
         },
         error: (error) => this.handleError(error),
@@ -87,17 +114,27 @@ export class GamesComponent implements OnInit, OnDestroy {
 
   public loadGames(): void {
     this.isLoading = true;
-    this.errorMessages = []; // reset errors
-    this.http.get<Game[]>(`${this.baseUrl}`).subscribe({
-      next: (games) => {
-        this.displayedGames = games;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.handleError(error);
-        this.displayedGames = [];
-      },
-    });
+    this.errorMessages = [];
+    this.http
+      .get<any>(`${this.baseUrl}/game-list/${this.currentPage}`)
+      .subscribe({
+        next: (response) => {
+          this.displayedGames = response.games;
+          this.currentPage = response.currentPage;
+          this.totalPages = response.totalPages;
+          this.hasNext = response.hasNext;
+          this.hasPrevious = response.hasPrevious;
+          this.pageNumbers = Array.from(
+            { length: this.totalPages },
+            (_, i) => i + 1
+          );
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.handleError(error);
+          this.displayedGames = [];
+        },
+      });
   }
 
   public toggleDescription(game: Game): void {
@@ -114,7 +151,27 @@ export class GamesComponent implements OnInit, OnDestroy {
   }
 
   public goToPage(page: number): void {
+    this.currentPage = page;
     this.loadGames();
+  }
+
+  public onGenreSelected(genre: string): void {
+    this.isLoading = true;
+    this.errorMessages = [];
+    if (this.selectedGenre === genre) {
+      this.selectedGenre = '';
+      this.loadGames();
+      return;
+    }
+
+    this.selectedGenre = genre;
+    this.http.get<Game[]>(`${this.baseUrl}/genre/${genre}`).subscribe({
+      next: (games) => {
+        this.displayedGames = games;
+        this.isLoading = false;
+      },
+      error: (error) => this.handleError(error),
+    });
   }
 
   ngOnDestroy(): void {
