@@ -18,6 +18,25 @@
       </li>
     </ul>
     <div class="ml-auto d-flex align-items-center">
+      <ng-container *ngIf="currentUser; else loginButton">
+        <div class="dropdown">
+          <img [src]="authService.getFullImageUrl(currentUser?.profilePicture || '')" 
+               alt="Profile" 
+               class="rounded-circle me-3" 
+               style="width: 32px; height: 32px; cursor: pointer;"
+               (click)="navigateToProfile()"
+               data-bs-toggle="dropdown">
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" [routerLink]="['/account/detail', currentUser?.id]">Profile</a></li>
+            <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+          </ul>
+        </div>
+      </ng-container>
+      <ng-template #loginButton>
+        <a class="text-reset me-3" routerLink="/login">
+          <i class="fas fa-user"></i>
+        </a>
+      </ng-template>
       <a class="text-reset me-3" href="#">
         <i class="fas fa-shopping-cart"></i>
       </a>

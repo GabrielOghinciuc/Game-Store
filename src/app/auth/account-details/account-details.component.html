@@ -1,0 +1,40 @@
+<div class="container mt-5 pt-5" *ngIf="user">
+  <div class="row">
+    <div class="col-md-4">
+      <img [src]="authService.getFullImageUrl(user.profilePicture)" 
+           alt="Profile Picture"
+           class="img-fluid rounded-circle mb-3"
+           style="width: 200px; height: 200px; object-fit: cover;">
+    </div>
+    <div class="col-md-8">
+      <h2>{{user.fullName}}</h2>
+      <p><strong>Username:</strong> {{user.username}}</p>
+      <p><strong>Email:</strong> {{user.email}}</p>
+      <p><strong>Member since:</strong> {{user.joinedOn | date:'mediumDate'}}</p>
+      <p><strong>Last login:</strong> {{user.lastLogin | date:'medium'}}</p>
+      <p><strong>Birth Date:</strong> {{user.birthDate | date:'mediumDate'}}</p>
+      <p>
+        <strong>Roles:</strong>
+        <span *ngIf="user.isClient" class="badge bg-primary me-1">Client</span>
+        <span *ngIf="user.isGameDeveloper" class="badge bg-success me-1">Game Developer</span>
+        <span *ngIf="user.isAdmin" class="badge bg-danger me-1">Admin</span>
+      </p>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <button mat-raised-button color="primary" class="me-3" (click)="editProfile()">
+        <mat-icon>edit</mat-icon>
+        Edit Profile
+      </button>
+      <button mat-raised-button color="warn" class="me-3" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+      <button mat-raised-button color="warn" (click)="deleteAccount()">
+        <mat-icon>delete_forever</mat-icon>
+        Delete Account
+      </button>
+    </div>
+  </div>
+</div>

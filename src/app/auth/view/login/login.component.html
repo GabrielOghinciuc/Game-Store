@@ -1,0 +1,39 @@
+<div class="login-container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="form-wrapper col-12 col-sm-10 col-md-6 col-lg-4 p-4">
+      <div class="text-center mb-4">
+        <h1 class="title">StimGame Login</h1>
+        <p class="subtitle">Sign in to your account</p>
+      </div>
+  
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="d-flex flex-column gap-3">
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email">
+          <mat-icon matPrefix>email</mat-icon>
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+  
+        <button mat-flat-button 
+                color="primary" 
+                type="submit" 
+                [disabled]="loginForm.invalid"
+                class="submit-button">
+          Sign In
+        </button>
+      </form>
+  
+      <div class="text-center mt-4">
+        <p class="register-text">No account? 
+          <a routerLink="/register" class="register-link">Create one</a>
+        </p>
+      </div>
+    </div>
+  </div>

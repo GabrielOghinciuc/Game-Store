@@ -1,5 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../shared/services/auth.service';
+import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
 
 @Component({
   selector: 'app-navbar',
@@ -10,8 +12,9 @@ export class NavbarComponent implements OnInit {
   public darkMode = false;
   public buttonText = 'Turn on Dark Mode';
   public isScrolled = false;
+  currentUser: UserDataBaseInterface | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, public authService: AuthService) {}
 
   ngOnInit(): void {
     if (typeof localStorage !== 'undefined') {
@@ -20,6 +23,9 @@ export class NavbarComponent implements OnInit {
         this.applyDarkMode();
       }
     }
+    this.authService.currentUser$.subscribe(
+      (user) => (this.currentUser = user)
+    );
   }
 
   @HostListener('window:scroll', [])
@@ -40,6 +46,12 @@ export class NavbarComponent implements OnInit {
 
   public isActive(route: string): boolean {
     return this.router.url === `/${route}`;
+  }
+
+  navigateToProfile(): void {
+    if (this.currentUser?.id) {
+      this.router.navigate(['/account/detail', this.currentUser.id]);
+    }
   }
 
   private applyDarkMode(): void {
@@ -92,5 +104,10 @@ export class NavbarComponent implements OnInit {
     });
 
     this.buttonText = 'Turn on Dark Mode';
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

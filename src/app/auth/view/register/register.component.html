@@ -1,0 +1,61 @@
+<div class="login-container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="form-wrapper col-12 col-sm-10 col-md-6 col-lg-4 p-4">
+    <div class="text-center mb-4">
+      <h1 class="title">StimGame Register</h1>
+      <p class="subtitle">Create your account</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="d-flex flex-column gap-3">
+      <!-- Username field -->
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-person"></i></span>
+        <input type="text" class="form-control" placeholder="Username" formControlName="username">
+      </div>
+
+      <!-- Full Name field -->
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+        <input type="text" 
+               class="form-control" 
+               placeholder="Full Name" 
+               formControlName="fullName"
+               [ngClass]="{'is-invalid': registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched}">
+        <div class="invalid-feedback" *ngIf="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched">
+          {{ getFullNameErrorMessage() }}
+        </div>
+      </div>
+
+      <!-- Email field -->
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+        <input type="email" class="form-control" placeholder="Email" formControlName="email">
+      </div>
+
+      <!-- Password field -->
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+        <input [type]="hidePassword ? 'password' : 'text'" class="form-control" placeholder="Password" formControlName="password">
+        <button class="btn btn-outline-secondary" type="button" (click)="hidePassword = !hidePassword">
+          <i class="bi" [ngClass]="hidePassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+        </button>
+      </div>
+
+      <!-- Birth Date field -->
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+        <input type="date" class="form-control" formControlName="birthDate">
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" class="btn btn-primary submit-button w-100" [disabled]="registerForm.invalid">
+        Register
+      </button>
+
+      <div class="text-center mt-4">
+        <p class="register-text">Already have an account? 
+          <a routerLink="/login" class="register-link">Sign in</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

@@ -33,7 +33,13 @@ import { RatingComponent } from './components/rating/rating.component';
 import { DisplayErrorsComponent } from './components/display-errors/display-errors.component';
 import { CommonModule } from '@angular/common';
 import { ChipComponent } from './components/chip/chip.component';
-
+import { LoginComponent } from './auth/view/login/login.component';
+import { RegisterComponent } from './auth/view/register/register.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { AccountDetailsComponent } from './auth/account-details/account-details.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,9 +57,36 @@ import { ChipComponent } from './components/chip/chip.component';
     RatingComponent,
     DisplayErrorsComponent,
     ChipComponent,
+    LoginComponent,
+    RegisterComponent,
+    AccountDetailsComponent,
   ],
   imports: [
     BrowserModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatCardModule,
+    MatButtonModule,
+    MatSlideToggleModule,
+    MatInputModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatCardModule,
+    MatButtonModule,
+    MatSlideToggleModule,
+    MatInputModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatCardModule,
+    MatButtonModule,
+    MatSlideToggleModule,
     ReactiveFormsModule,
     HttpClientModule,
     MatAutocompleteModule,
