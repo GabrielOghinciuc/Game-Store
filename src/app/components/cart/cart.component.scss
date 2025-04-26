@@ -1,0 +1,47 @@
+.table-image {
+  width: 100px;
+  height: auto;
+  object-fit: cover;
+}
+
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+mat-form-field {
+  width: 100%;
+  color: rgba(0, 0, 0, 0.87); // default Material text color
+}
+
+::ng-deep {
+  .mat-mdc-text-field-wrapper {
+    background-color: white !important;
+  }
+  
+  .mat-mdc-form-field-label {
+    color: rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .mat-mdc-input-element {
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: white !important;
+  }
+}
+
+.mat-mdc-row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.mat-mdc-card {
+  background-color: white;
+}
+
+.mat-mdc-card-title {
+  color: rgba(0, 0, 0, 0.87);
+}

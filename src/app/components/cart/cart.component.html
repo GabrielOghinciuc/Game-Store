@@ -1,0 +1,114 @@
+<div class="container mt-4">
+  <h2>Shopping Cart</h2>
+  
+  <div *ngIf="(cartItems$ | async)?.length === 0" class="alert alert-info">
+    Your cart is empty
+  </div>
+
+  <ng-container *ngIf="cartItems$ | async as items">
+    <div *ngIf="items.length > 0">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Game</th>
+            <th>Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let game of items">
+            <td style="width: 100px">
+              <img [src]="game.image" [alt]="game.name" class="img-fluid">
+            </td>
+            <td>{{game.name}}</td>
+            <td>{{game.discountedPrice || game.originalPrice | currency}}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="removeFromCart(game.id)">
+                Remove
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" class="text-end"><strong>Total:</strong></td>
+            <td colspan="2"><strong>{{cartService.getCartTotal() | currency}}</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button class="btn btn-primary" (click)="checkout()">
+          Proceed to Checkout
+        </button>
+      </div>
+
+      <mat-card *ngIf="showPaymentForm$ | async" class="mt-4 mat-elevation-z2">
+        <mat-card-header>
+          <mat-card-title class="mb-3">Payment Details</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <app-display-errors *ngIf="errors.length > 0" [errors]="errors"></app-display-errors>
+          <div *ngIf="errorMessage" class="alert alert-danger mb-3">
+            {{ errorMessage }}
+          </div>
+          <form #paymentForm="ngForm" (ngSubmit)="submitPayment()" class="payment-form">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Card Number</mat-label>
+              <input matInput [(ngModel)]="paymentData.cardNumber" 
+                     #cardNumber="ngModel"
+                     name="cardNumber" minlength="16" maxlength="16" 
+                     pattern="[0-9]{16}" required
+                     placeholder="Enter 16 digit card number">
+              <mat-error *ngIf="cardNumber.invalid && cardNumber.touched">
+                Please enter a valid 16-digit card number
+              </mat-error>
+            </mat-form-field>
+
+            <div class="row">
+              <div class="col-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Expiry Date</mat-label>
+                  <input matInput [(ngModel)]="paymentData.expiryDate"
+                         #expiryDate="ngModel"
+                         name="expiryDate" 
+                         placeholder="MM/YY" 
+                         (input)="formatExpiryDate($event)"
+                         pattern="(0[1-9]|1[0-2])\/([0-9]{2})"
+                         maxlength="5" required>
+                  <mat-error *ngIf="expiryDate.invalid && expiryDate.touched">
+                    Please enter a valid date (MM/YY)
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>CVV</mat-label>
+                  <input matInput [(ngModel)]="paymentData.cvv"
+                         #cvv="ngModel"
+                         name="cvv" maxlength="3" pattern="[0-9]{3}" required>
+                  <mat-error *ngIf="cvv.invalid && cvv.touched">
+                    Please enter a valid 3-digit CVV
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <button mat-raised-button color="primary" 
+                      type="submit" 
+                      [disabled]="!paymentForm.form.valid">
+                Complete Purchase
+              </button>
+              <button mat-button type="button" (click)="cancelPayment()">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>

@@ -16,7 +16,13 @@
         </mat-autocomplete>
       </mat-form-field>
     </form>
-    <button type="button" routerLink="/add" class="btn btn-success" style="font-size: 1.1em; padding: 10px 20px;">Adauga Joc!</button>
+    <button type="button" 
+            routerLink="/add" 
+            class="btn btn-success" 
+            style="font-size: 1.1em; padding: 10px 20px;"
+            *ngIf="currentUser?.isAdmin || currentUser?.isGameDeveloper">
+      Adauga Joc!
+    </button>
   </div>
 
   <div class="genres-container d-flex flex-wrap justify-content-center align-items-center gap-2 my-4">

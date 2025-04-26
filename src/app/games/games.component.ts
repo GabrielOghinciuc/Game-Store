@@ -12,6 +12,8 @@ import {
 } from 'rxjs/operators';
 import { Game } from '../shared/interfaces/game.model';
 import { extractErrors } from '../shared/functions/extractErrors';
+import { AuthService } from '../shared/services/auth.service';
+import { UserDataBaseInterface } from '../shared/interfaces/user-interface';
 
 @Component({
   selector: 'app-games',
@@ -40,11 +42,16 @@ export class GamesComponent implements OnInit, OnDestroy {
     'Indie',
   ];
   public selectedGenre: string = '';
+  public currentUser: UserDataBaseInterface | null = null;
   private routerSubscription?: Subscription;
   private baseUrl = 'https://localhost:7262/Games';
   private gameNames: string[] = ['Minecraft', 'Counter Strike 2', 'Elden Ring'];
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private authService: AuthService
+  ) {
     this.filteredSus = this.control.valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(value || ''))
@@ -54,6 +61,9 @@ export class GamesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadGames();
     this.setupSearch();
+    this.authService.currentUser$.subscribe(
+      (user) => (this.currentUser = user)
+    );
   }
 
   private _filter(value: string): string[] {

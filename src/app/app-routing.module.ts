@@ -9,9 +9,13 @@ import { GameEditComponent } from './components/game-edit/game-edit.component';
 import { LoginComponent } from './auth/view/login/login.component';
 import { RegisterComponent } from './auth/view/register/register.component';
 import { AccountDetailsComponent } from './auth/account-details/account-details.component';
-//import { AccountEditComponent } from './auth/account-edit/account-edit.component';
+import { AccountEditComponent } from './auth/account-edit/account-edit.component';
+import { AccountListComponent } from './auth/account-list/account-list.component';
+import { CartComponent } from './components/cart/cart.component';
+
 const routes: Routes = [
   { path: '', component: GameListComponent },
+  { path: 'home', component: GameListComponent },
   { path: 'add', component: GameAddComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -19,7 +23,9 @@ const routes: Routes = [
   { path: 'games/edit/:id', component: GameEditComponent },
   { path: 'games', component: GamesComponent },
   { path: 'account/detail/:id', component: AccountDetailsComponent },
-  //{ path: 'account/edit/:id', component: AccountEditComponent },
+  { path: 'account/edit/:id', component: AccountEditComponent },
+  { path: 'account/list', component: AccountListComponent },
+  { path: 'cart', component: CartComponent },
   { path: '**', component: NotFoundComponent },
 ];
 

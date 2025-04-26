@@ -5,6 +5,11 @@ import { HttpClient } from '@angular/common/http';
 import { GameUpdateService } from '../../shared/services/game-update.service';
 import Swal from 'sweetalert2';
 import { RatingComponent } from '../rating/rating.component';
+import { AuthService } from '../../shared/services/auth.service';
+import { CartService } from '../../shared/services/cart.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
+
 @Component({
   selector: 'app-game-details',
   templateUrl: './game-details.component.html',
@@ -20,7 +25,10 @@ export class GameDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private http: HttpClient,
     private router: Router,
-    private gameUpdateService: GameUpdateService
+    private gameUpdateService: GameUpdateService,
+    private authService: AuthService,
+    private cartService: CartService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -108,5 +116,32 @@ export class GameDetailsComponent implements OnInit {
           });
       }
     });
+  }
+
+  buyNow(): void {
+    if (!this.game) {
+      return;
+    }
+
+    const isLoggedIn = this.authService.currentUserSubject.getValue() !== null;
+    if (!isLoggedIn) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.cartService.addToCart(this.game);
+    this.snackBar.open('Game added to cart!', 'Close', {
+      duration: 2000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+  }
+
+  isGameBought(): boolean {
+    const currentUser = this.authService.currentUserSubject.getValue();
+    if (!currentUser || !currentUser.boughtGames || !this.game) {
+      return false;
+    }
+    return currentUser.boughtGames.includes(this.game.id);
   }
 }

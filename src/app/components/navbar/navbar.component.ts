@@ -1,20 +1,32 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
+import { CartService } from '../../shared/services/cart.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   public darkMode = false;
   public buttonText = 'Turn on Dark Mode';
   public isScrolled = false;
   currentUser: UserDataBaseInterface | null = null;
+  cartItemsCount: number = 0;
+  private cartSubscription: Subscription;
 
-  constructor(private router: Router, public authService: AuthService) {}
+  constructor(
+    private router: Router,
+    public authService: AuthService,
+    private cartService: CartService
+  ) {
+    this.cartSubscription = this.cartService.cartItems$.subscribe((items) => {
+      this.cartItemsCount = items.length;
+    });
+  }
 
   ngOnInit(): void {
     if (typeof localStorage !== 'undefined') {
@@ -26,6 +38,12 @@ export class NavbarComponent implements OnInit {
     this.authService.currentUser$.subscribe(
       (user) => (this.currentUser = user)
     );
+  }
+
+  ngOnDestroy() {
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
   }
 
   @HostListener('window:scroll', [])

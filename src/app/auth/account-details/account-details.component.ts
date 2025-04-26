@@ -1,29 +1,100 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
 import Swal from 'sweetalert2';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-account-details',
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountDetailsComponent implements OnInit {
+export class AccountDetailsComponent implements OnInit, OnDestroy {
   user: UserDataBaseInterface | null = null;
+  boughtGames: any[] = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe((user) => {
-      if (user) {
-        this.user = user;
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user) => {
+        if (user) {
+          this.user = user;
+          this.loadBoughtGames();
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  loadBoughtGames(): void {
+    const boughtGamesString = localStorage.getItem('boughtGames');
+
+    if (!boughtGamesString) {
+      this.boughtGames = [];
+      return;
+    }
+
+    try {
+      let boughtGamesIds = JSON.parse(boughtGamesString);
+
+      if (typeof boughtGamesIds === 'string') {
+        boughtGamesIds = boughtGamesIds.split(',').map(Number);
       }
-    });
+
+      if (!Array.isArray(boughtGamesIds)) {
+        this.boughtGames = [];
+        return;
+      }
+
+      const validGameIds = boughtGamesIds
+        .map((id) => Number(id))
+        .filter((id) => !isNaN(id) && id > 0);
+
+      if (validGameIds.length > 0) {
+        this.authService
+          .fetchBoughtGames(validGameIds)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (response) => {
+              if (response && response.games) {
+                this.boughtGames = response.games;
+                this.cdr.markForCheck();
+              }
+            },
+            error: (error) => {
+              Swal.fire('Error', 'Failed to load your games library', 'error');
+              this.boughtGames = [];
+              this.cdr.markForCheck();
+            },
+          });
+      }
+    } catch (error) {
+      this.boughtGames = [];
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   logout(): void {

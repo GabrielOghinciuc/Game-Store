@@ -1,0 +1,84 @@
+.game-item {
+    margin-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    height: auto !important;
+    min-height: 80px;
+    padding: 16px 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+      transform: translateX(4px);
+    }
+  
+    [matListAvatar] {
+      width: 60px !important;
+      height: 60px !important;
+      border-radius: 4px !important;
+      object-fit: cover;
+      margin-right: 16px;
+    }
+  
+    .game-title {
+      font-weight: 500;
+      font-size: 16px;
+      color: #34495e;
+      margin-bottom: 4px;
+    }
+  
+    .game-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+  
+      .game-description {
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 14px;
+        max-width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+  
+      .genre-badge {
+        background: #ecf0f1;
+        color: #2c3e50;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+  
+      .game-price {
+        color: #27ae60;
+        font-weight: 500;
+      }
+    }
+  
+    .game-button {
+      color: #3498db;
+      transition: all 0.2s ease;
+  
+      &:hover {
+        color: #2980b9;
+        transform: scale(1.1);
+      }
+    }
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 40px 0;
+  
+    p {
+      color: #7f8c8d;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+  
+    button {
+      padding: 8px 24px;
+      font-size: 14px;
+    }
+  }

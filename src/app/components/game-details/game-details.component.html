@@ -36,9 +36,17 @@
             <p *ngIf="game.discountedPrice && game.discountedPrice < game.originalPrice" class="discounted-price">
               Sale price: ${{ game.discountedPrice }}
             </p>
-            <button class="btn btn-primary">
+            <button *ngIf="!isGameBought()" 
+                    class="btn btn-primary" 
+                    (click)="buyNow(); $event.preventDefault()">
               <i class="bi bi-cart-plus-fill"></i>
               Add to Cart
+            </button>
+            <button *ngIf="isGameBought()" 
+                    class="btn btn-success" 
+                    disabled>
+              <i class="bi bi-check-circle"></i>
+              Already Bought
             </button>
             <button class="btn btn-warning ms-2" (click)="navigateToEdit()">
               <i class="bi bi-pencil"></i> Edit
@@ -54,4 +62,5 @@
   
   <div class="alert alert-warning text-center error-message" *ngIf="!game">
     <i class="bi bi-exclamation-triangle-fill"></i>
-    <p class="mb-0">Game
+    <p class="mb-0">Game not found.</p>
+  </div>

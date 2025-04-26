@@ -40,6 +40,18 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { AccountDetailsComponent } from './auth/account-details/account-details.component';
+import { AccountEditComponent } from './auth/account-edit/account-edit.component';
+import { AccountListComponent } from './auth/account-list/account-list.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+import { CartComponent } from './components/cart/cart.component';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatListModule } from '@angular/material/list';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -60,6 +72,9 @@ import { AccountDetailsComponent } from './auth/account-details/account-details.
     LoginComponent,
     RegisterComponent,
     AccountDetailsComponent,
+    AccountEditComponent,
+    AccountListComponent,
+    CartComponent,
   ],
   imports: [
     BrowserModule,
@@ -100,6 +115,14 @@ import { AccountDetailsComponent } from './auth/account-details/account-details.
     MatIconModule,
     MatFormFieldModule,
     CommonModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatChipsModule,
+    MatDividerModule,
+    MatBadgeModule,
+    MatSnackBarModule,
+    MatListModule,
   ],
   providers: [provideClientHydration(), provideAnimationsAsync()],
   bootstrap: [AppComponent],

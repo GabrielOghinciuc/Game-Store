@@ -20,14 +20,14 @@
     <div class="ml-auto d-flex align-items-center">
       <ng-container *ngIf="currentUser; else loginButton">
         <div class="dropdown">
-          <img [src]="authService.getFullImageUrl(currentUser?.profilePicture || '')" 
+          <img [src]="authService.getFullImageUrl(currentUser.profilePicture || '')" 
                alt="Profile" 
                class="rounded-circle me-3" 
                style="width: 32px; height: 32px; cursor: pointer;"
                (click)="navigateToProfile()"
                data-bs-toggle="dropdown">
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" [routerLink]="['/account/detail', currentUser?.id]">Profile</a></li>
+            <li><a class="dropdown-item" [routerLink]="['/account/detail', currentUser.id]">Profile</a></li>
             <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
           </ul>
         </div>
@@ -37,8 +37,11 @@
           <i class="fas fa-user"></i>
         </a>
       </ng-template>
-      <a class="text-reset me-3" href="#">
-        <i class="fas fa-shopping-cart"></i>
+      <a class="text-reset me-3" routerLink="/cart" style="font-size: 20px;">
+        <i class="fas fa-shopping-cart" [matBadge]="cartItemsCount" [matBadgeHidden]="cartItemsCount === 0" matBadgeColor="warn"></i>
+      </a>      
+      <a *ngIf="currentUser?.isAdmin" routerLink="/account/list" class="btn btn-primary btn-sm me-2 px-2 py-1">
+        <i class="fas fa-users-cog"></i> Users
       </a>
       <button class="btn btn-dark" (click)="toggleDarkMode()">
         {{ buttonText }}

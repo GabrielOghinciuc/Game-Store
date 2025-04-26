@@ -13,7 +13,7 @@
       <p><strong>Member since:</strong> {{user.joinedOn | date:'mediumDate'}}</p>
       <p><strong>Last login:</strong> {{user.lastLogin | date:'medium'}}</p>
       <p><strong>Birth Date:</strong> {{user.birthDate | date:'mediumDate'}}</p>
-      <p>
+      <p *ngIf="user.isAdmin">
         <strong>Roles:</strong>
         <span *ngIf="user.isClient" class="badge bg-primary me-1">Client</span>
         <span *ngIf="user.isGameDeveloper" class="badge bg-success me-1">Game Developer</span>
@@ -35,6 +35,43 @@
         <mat-icon>delete_forever</mat-icon>
         Delete Account
       </button>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <mat-card class="library-card">
+        <mat-card-header>
+          <h2 style="color: black;">My Games Library</h2>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list class="game-list">
+            <ng-container *ngIf="boughtGames.length > 0; else noGames">
+              <mat-list-item *ngFor="let game of boughtGames" class="game-item">
+                <img matListAvatar 
+                     [src]="authService.getFullImageUrl(game.image)"
+                     [alt]="game.name">
+                <div matLine class="game-title">{{game.name}}</div>
+                <div matLine class="game-info">
+                  <span style="color: black;">{{game.description}}</span>
+                  <span class="genre-badge">{{game.genre}}</span>
+                  <span class="game-price">{{game.originalPrice | currency:'USD'}}</span>
+                </div>
+                <button mat-icon-button [routerLink]="['/games/details', game.id]" class="game-button">
+                  <mat-icon>launch</mat-icon>
+                </button>
+              </mat-list-item>
+            </ng-container>
+            <ng-template #noGames>
+              <div class="empty-state">
+                <p>No games in your library yet.</p>
+                <button mat-raised-button color="primary" routerLink="/games">
+                  Browse Games
+                </button>
+              </div>
+            </ng-template>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 </div>

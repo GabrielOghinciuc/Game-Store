@@ -27,7 +27,16 @@
         <span>Price: ${{ game.originalPrice }}</span>
       </p>
     </div>
-    <a href="#" class="btn btn-primary w-100">Buy Now</a>
+    <button *ngIf="!isGameBought()" 
+            class="btn btn-primary w-100" 
+            (click)="buyNow(); $event.preventDefault()">
+      Buy Now
+    </button>
+    <button *ngIf="isGameBought()" 
+            class="btn btn-success w-100" 
+            disabled>
+      Already Bought
+    </button>
     <button (click)="onDetailsClick()" class="btn btn-secondary w-100 mt-2">Details</button>
   </div>
 </div>
