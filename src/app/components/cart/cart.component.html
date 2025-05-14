@@ -49,10 +49,6 @@
           <mat-card-title class="mb-3">Payment Details</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <app-display-errors *ngIf="errors.length > 0" [errors]="errors"></app-display-errors>
-          <div *ngIf="errorMessage" class="alert alert-danger mb-3">
-            {{ errorMessage }}
-          </div>
           <form #paymentForm="ngForm" (ngSubmit)="submitPayment()" class="payment-form">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Card Number</mat-label>

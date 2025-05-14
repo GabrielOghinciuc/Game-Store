@@ -1,58 +1,83 @@
 <div class="container mt-4">
-  <div class="card" *ngIf="game">
-    <div class="card-header">
-      <h3>Edit Game</h3>
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="isLoading" class="text-center mt-4">
+    <div class="spinner-border"></div>
+  </div>
+
+  <div class="card" *ngIf="game && !isLoading">
+    <div class="card-header bg-primary text-white">
+      <h3>Edit Game: {{ game.name }}</h3>
     </div>
+
     <div class="card-body">
       <form #gameForm="ngForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label class="form-label">Name</label>
-          <input type="text" class="form-control" [(ngModel)]="game.name" name="name">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" [(ngModel)]="game.name" name="name">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Genre</label>
+            <input type="text" class="form-control" [(ngModel)]="game.genre" name="genre">
+          </div>
         </div>
+
         <div class="mb-3">
           <label class="form-label">Description</label>
           <textarea class="form-control" [(ngModel)]="game.description" name="description" rows="3"></textarea>
         </div>
+
         <div class="mb-3">
           <app-input-img [title]="'Game Image'" (selectedFile)="onImageSelected($event)"></app-input-img>
         </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Original Price ($)</label>
+            <input type="number" class="form-control" [(ngModel)]="game.originalPrice" name="originalPrice">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Discounted Price ($)</label>
+            <input type="number" class="form-control" [(ngModel)]="game.discountedPrice" name="discountedPrice">
+          </div>
+        </div>
+
         <div class="mb-3">
-          <label class="form-label">Original Price</label>
-          <input type="number" class="form-control" [(ngModel)]="game.originalPrice" name="originalPrice">
+          <label class="form-label">Platforms (separate with commas)</label>
+          <input type="text" class="form-control" [(ngModel)]="platformsString" 
+                 (change)="updatePlatforms()" name="platforms"
+                 placeholder="Example: PC, PS5, Xbox">
         </div>
+
         <div class="mb-3">
-          <label class="form-label">Discounted Price</label>
-          <input type="number" class="form-control" [(ngModel)]="game.discountedPrice" name="discountedPrice">
+          <label class="form-label">Rating (0-5)</label>
+          <input type="number" class="form-control" [(ngModel)]="game.rating" 
+                 name="rating" min="0" max="5" step="0.1">
         </div>
+
         <div class="mb-3">
-          <label class="form-label">Rating</label>
-          <input type="number" class="form-control" [(ngModel)]="game.rating" name="rating" min="0" max="5">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" 
+                   [(ngModel)]="game.showFullDescription" 
+                   name="showFullDescription" id="showFullDescription">
+            <label class="form-check-label" for="showFullDescription">Show Full Description</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" 
+                   [(ngModel)]="game.showOnFirstPage" 
+                   name="showOnFirstPage" id="showOnFirstPage">
+            <label class="form-check-label" for="showOnFirstPage">Feature on Home Page</label>
+          </div>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Platforms (comma-separated)</label>
-          <input type="text" class="form-control" [(ngModel)]="platformsString" (change)="updatePlatforms($event)" name="platforms">
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="submit" class="btn btn-primary me-md-2">Save Changes</button>
+          <a routerLink="/games" class="btn btn-secondary">Cancel</a>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Genre</label>
-          <input type="text" class="form-control" [(ngModel)]="game.genre" name="genre">
-        </div>
-        <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input" [(ngModel)]="game.showFullDescription" name="showFullDescription" id="showFullDescription">
-          <label class="form-check-label" for="showFullDescription">Show Full Description</label>
-        </div>
-        <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input" [(ngModel)]="game.showOnFirstPage" name="showOnFirstPage" id="showOnFirstPage">
-          <label class="form-check-label" for="showOnFirstPage">Show on First Page</label>
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Save Changes</button>
       </form>
     </div>
-  </div>
-  <div *ngIf="isLoading" class="text-center mt-4">
-    <div class="spinner-border"></div>
-  </div>
-  <div *ngIf="error" class="alert alert-danger mt-4">
-    {{error}}
   </div>
 </div>

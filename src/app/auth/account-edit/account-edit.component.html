@@ -1,64 +1,41 @@
-<div class=" account-edit-container"> 
-    <div class="card" *ngIf="user">
-    <div class="card-header">
-      <h3>Edit Profile</h3>
-    </div>
-    <div class="card-body">
-      <form #userForm="ngForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <app-input-img [title]="'Profile Picture'" 
-                        [imageURL]="authService.getFullImageUrl(user.profilePicture)"
-                        (selectedFile)="onImageSelected($event)">
-          </app-input-img>
-        </div>
-        <div class="mb-3">
-          <label for="fullName" class="form-label">Full Name</label>
-          <input type="text" 
-                 class="form-control" 
-                 id="fullName" 
-                 name="fullName"
-                 [(ngModel)]="user.fullName" 
-                 required>
-        </div>
-        <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input type="text" 
-                 class="form-control" 
-                 id="username" 
-                 name="username"
-                 [(ngModel)]="user.username" 
-                 required>
-        </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" 
-                 class="form-control" 
-                 id="email" 
-                 name="email"
-                 [(ngModel)]="user.email" 
-                 required>
-        </div>
-        <div class="mb-3">
-          <label for="birthDate" class="form-label">Birth Date</label>
-          <input type="date" 
-                 class="form-control" 
-                 id="birthDate" 
-                 name="birthDate"
-                 [ngModel]="user.birthDate | date:'yyyy-MM-dd'"
-                 (ngModelChange)="user.birthDate = $event"
-                 required>
-        </div>
-        <div class="d-flex gap-2">
-          <button type="submit" mat-raised-button color="primary">
-            <mat-icon>save</mat-icon>
-            Save Changes
-          </button>
-          <button type="button" mat-raised-button (click)="cancel()">
-            <mat-icon>cancel</mat-icon>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+<div class="edit-container">
+  <div class="edit-card" *ngIf="user">
+    <h2>Edit Profile</h2>
+    
+    <form (ngSubmit)="updateProfile()">
+      <app-input-img [title]="'Profile Picture'" 
+      [imageURL]="authService.getFullImageUrl(user.profilePicture)"
+      (selectedFile)="onImageSelected($event)">
+</app-input-img>
+
+      <div class="form-field">
+        <label>Full Name</label>
+        <input type="text" [(ngModel)]="user.fullName" name="fullName">
+      </div>
+
+      <div class="form-field">
+        <label>Username</label>
+        <input type="text" [(ngModel)]="user.username" name="username">
+      </div>
+
+      <div class="form-field">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="user.email" name="email">
+      </div>
+
+      <div class="form-field">
+        <label>Birth Date</label>
+        <input type="date" [(ngModel)]="user.birthDate" name="birthDate">
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="save-button">
+          Save Changes
+        </button>
+        <button type="button" class="cancel-button" (click)="cancel()">
+          Cancel
+        </button>
+      </div>
+    </form>
   </div>
 </div>

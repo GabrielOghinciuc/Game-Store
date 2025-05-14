@@ -4,6 +4,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
 import { CartService } from '../../shared/services/cart.service';
 import { Subscription } from 'rxjs';
+import { Game } from '../../shared/interfaces/game.model';
 
 @Component({
   selector: 'app-navbar',
@@ -23,9 +24,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private cartService: CartService
   ) {
-    this.cartSubscription = this.cartService.cartItems$.subscribe((items) => {
-      this.cartItemsCount = items.length;
-    });
+    this.cartSubscription = this.cartService.cartItems$.subscribe(
+      (items: Game[]) => {
+        this.cartItemsCount = items.length;
+      }
+    );
   }
 
   ngOnInit(): void {

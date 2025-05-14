@@ -9,11 +9,11 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './game-edit.component.scss',
 })
 export class GameEditComponent implements OnInit {
-  public game: Game | undefined;
-  public isLoading: boolean = true;
-  public error: string | null = null;
-  public platformsString: string = '';
-  private selectedFile: File | null = null;
+  game: Game | undefined;
+  isLoading: boolean = true;
+  error: string | null = null;
+  platformsString: string = '';
+  selectedFile: File | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -22,24 +22,27 @@ export class GameEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const gameId = Number(this.route.snapshot.paramMap.get('id'));
+    this.loadGame(gameId);
+  }
+
+  private loadGame(id: number): void {
     this.http.get<Game>(`https://localhost:7262/Games/${id}`).subscribe({
       next: (game) => {
         this.game = game;
-        if (typeof game.platforms === 'string') {
-          game.platforms = JSON.parse(game.platforms as string);
-        }
-        this.platformsString = game.platforms.join(', ');
+        this.platformsString = Array.isArray(game.platforms)
+          ? game.platforms.join(', ')
+          : JSON.parse(game.platforms as string).join(', ');
         this.isLoading = false;
       },
-      error: (err) => {
-        this.error = 'Failed to load game';
+      error: () => {
+        this.error = 'Could not load game. Please try again.';
         this.isLoading = false;
       },
     });
   }
 
-  updatePlatforms(event: any): void {
+  updatePlatforms(): void {
     if (this.game) {
       this.game.platforms = this.platformsString
         .split(',')
@@ -48,7 +51,7 @@ export class GameEditComponent implements OnInit {
     }
   }
 
-  onImageSelected(file: File) {
+  onImageSelected(file: File): void {
     this.selectedFile = file;
   }
 
@@ -56,10 +59,6 @@ export class GameEditComponent implements OnInit {
     if (!this.game) return;
 
     this.isLoading = true;
-    this.error = null;
-
-    this.updatePlatforms(null);
-
     const formData = new FormData();
 
     if (this.selectedFile) {
@@ -67,14 +66,7 @@ export class GameEditComponent implements OnInit {
       this.game.image = '/uploads/games/' + this.selectedFile.name;
     }
 
-    formData.append(
-      'platforms',
-      this.platformsString
-        .split(',')
-        .map((p) => p.trim())
-        .filter((p) => p.length > 0)
-        .join(',')
-    );
+    formData.append('platforms', this.platformsString);
 
     Object.keys(this.game).forEach((key) => {
       if (key !== 'platforms') {
@@ -86,22 +78,11 @@ export class GameEditComponent implements OnInit {
       .put(`https://localhost:7262/Games/edit-game/${this.game.id}`, formData)
       .subscribe({
         next: () => {
-          this.isLoading = false;
           this.router.navigate(['/games']);
         },
-        error: (err) => {
+        error: () => {
+          this.error = 'Failed to update game. Please try again.';
           this.isLoading = false;
-          console.error('Error details:', err);
-
-          if (err.status === 404) {
-            this.error = `Game with ID ${this.game?.id} not found`;
-          } else if (err.status === 400) {
-            this.error = err.error || 'A game with this name already exists';
-          } else if (err.status === 500) {
-            this.error = 'Server error occurred while editing the game';
-          } else {
-            this.error = err.error || 'Failed to update game';
-          }
         },
       });
   }

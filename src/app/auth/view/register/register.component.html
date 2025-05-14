@@ -6,13 +6,11 @@
     </div>
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="d-flex flex-column gap-3">
-      <!-- Username field -->
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-person"></i></span>
         <input type="text" class="form-control" placeholder="Username" formControlName="username">
       </div>
 
-      <!-- Full Name field -->
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
         <input type="text" 
@@ -25,13 +23,11 @@
         </div>
       </div>
 
-      <!-- Email field -->
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-envelope"></i></span>
         <input type="email" class="form-control" placeholder="Email" formControlName="email">
       </div>
 
-      <!-- Password field -->
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-lock"></i></span>
         <input [type]="hidePassword ? 'password' : 'text'" class="form-control" placeholder="Password" formControlName="password">
@@ -40,13 +36,11 @@
         </button>
       </div>
 
-      <!-- Birth Date field -->
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-calendar"></i></span>
         <input type="date" class="form-control" formControlName="birthDate">
       </div>
 
-      <!-- Submit button -->
       <button type="submit" class="btn btn-primary submit-button w-100" [disabled]="registerForm.invalid">
         Register
       </button>

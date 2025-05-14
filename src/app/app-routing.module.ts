@@ -12,19 +12,33 @@ import { AccountDetailsComponent } from './auth/account-details/account-details.
 import { AccountEditComponent } from './auth/account-edit/account-edit.component';
 import { AccountListComponent } from './auth/account-list/account-list.component';
 import { CartComponent } from './components/cart/cart.component';
+import { AdminGuard } from './guards/admin.guard';
+import { GameDeveloperGuard } from './guards/game-developer.guard';
 
 const routes: Routes = [
   { path: '', component: GameListComponent },
   { path: 'home', component: GameListComponent },
-  { path: 'add', component: GameAddComponent },
+  {
+    path: 'add',
+    component: GameAddComponent,
+    canActivate: [AdminGuard, GameDeveloperGuard],
+  },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'games/details/:id', component: GameDetailsComponent },
-  { path: 'games/edit/:id', component: GameEditComponent },
+  {
+    path: 'games/edit/:id',
+    component: GameEditComponent,
+    canActivate: [AdminGuard, GameDeveloperGuard],
+  },
   { path: 'games', component: GamesComponent },
   { path: 'account/detail/:id', component: AccountDetailsComponent },
   { path: 'account/edit/:id', component: AccountEditComponent },
-  { path: 'account/list', component: AccountListComponent },
+  {
+    path: 'account/list',
+    component: AccountListComponent,
+    canActivate: [AdminGuard],
+  },
   { path: 'cart', component: CartComponent },
   { path: '**', component: NotFoundComponent },
 ];

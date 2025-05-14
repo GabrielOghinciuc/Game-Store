@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { UserDataBaseInterface } from '../../../shared/interfaces/user-interface';
 
 @Component({
   selector: 'app-register',
@@ -11,16 +10,21 @@ import { UserDataBaseInterface } from '../../../shared/interfaces/user-interface
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
+
   hidePassword = true;
 
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private http: HttpClient,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.registerForm = this.fb.group({
+    this.initializeForm();
+  }
+
+  initializeForm(): void {
+    this.registerForm = this.formBuilder.group({
       username: ['', Validators.required],
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -33,16 +37,21 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  getEmailErrorMessage() {
-    if (this.registerForm.get('email')?.hasError('required')) {
+  getEmailErrorMessage(): string {
+    const emailControl = this.registerForm.get('email');
+
+    if (emailControl?.hasError('required')) {
       return 'Email is required';
     }
-    return this.registerForm.get('email')?.hasError('email')
-      ? 'Invalid email format'
-      : '';
+
+    if (emailControl?.hasError('email')) {
+      return 'Please enter a valid email address';
+    }
+
+    return '';
   }
 
-  getFullNameErrorMessage() {
+  getFullNameErrorMessage(): string {
     if (this.registerForm.get('fullName')?.hasError('required')) {
       return 'Full name is required';
     }
@@ -51,33 +60,46 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      const formValue = this.registerForm.value;
-
-      const newUser = {
-        username: formValue.username,
-        password: formValue.password,
-        email: formValue.email,
-        fullName: formValue.fullName || '',
-        birthDate: new Date(formValue.birthDate),
-        joinedOn: new Date(),
-        lastLogin: new Date(),
-        isClient: formValue.isClient,
-        isGameDeveloper: formValue.isGameDeveloper,
-        isAdmin: formValue.isAdmin,
-        profilePicture: formValue.profilePicture || '',
-      };
-
-      this.http
-        .post('https://localhost:7262/Users/register', newUser)
-        .subscribe({
-          next: (response) => {
-            console.log('Registration successful', response);
-            this.router.navigate(['/login']);
-          },
-          error: (error) => {
-            console.error('Registration failed', error);
-          },
-        });
+      this.registerUser();
+    } else {
+      console.log('Form has errors. Please fix them.');
     }
+  }
+
+  private registerUser(): void {
+    const formData = this.registerForm.value;
+    const userData = this.prepareUserData(formData);
+
+    this.http
+      .post('https://localhost:7262/Users/register', userData)
+      .subscribe({
+        next: (response) => this.handleRegistrationSuccess(response),
+        error: (error) => this.handleRegistrationError(error),
+      });
+  }
+
+  private prepareUserData(formData: any): any {
+    return {
+      username: formData.username,
+      password: formData.password,
+      email: formData.email,
+      fullName: formData.fullName || '',
+      birthDate: new Date(formData.birthDate),
+      joinedOn: new Date(),
+      lastLogin: new Date(),
+      isClient: formData.isClient,
+      isGameDeveloper: formData.isGameDeveloper,
+      isAdmin: formData.isAdmin,
+      profilePicture: formData.profilePicture || '',
+    };
+  }
+
+  private handleRegistrationSuccess(response: any): void {
+    console.log('Registration successful', response);
+    this.router.navigate(['/login']);
+  }
+
+  private handleRegistrationError(error: any): void {
+    console.error('Registration failed', error);
   }
 }

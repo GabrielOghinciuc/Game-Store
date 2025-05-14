@@ -9,7 +9,6 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'https://localhost:7262/Users';
   private baseUrl = 'https://localhost:7262';
   public currentUserSubject = new BehaviorSubject<UserDataBaseInterface | null>(
     null
@@ -30,7 +29,7 @@ export class AuthService {
     }
   }
 
-  getFullImageUrl(imagePath: string): string {
+  public getFullImageUrl(imagePath: string): string {
     if (!imagePath) return '';
     if (imagePath.startsWith('https://')) {
       return imagePath;
@@ -38,19 +37,17 @@ export class AuthService {
     return `${this.baseUrl}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
   }
 
-  login(email: string, password: string): Observable<any> {
+  public login(email: string, password: string): Observable<any> {
     return this.http
-      .post<any>(`${this.apiUrl}/login`, { email, password })
+      .post<any>(`${this.baseUrl}/Users/login`, { email, password })
       .pipe(
         tap((response) => {
           console.log('Full login response:', response);
-          // Check if boughtGames exists in the response or in user object
           const boughtGames =
             response.boughtGames || response.user?.boughtGames || [];
           console.log('Found bought games:', boughtGames);
           localStorage.setItem('boughtGames', JSON.stringify(boughtGames));
 
-          // Handle user data
           const userData = response.user || response;
           if (typeof window !== 'undefined') {
             localStorage.setItem('currentUser', JSON.stringify(userData));
@@ -60,30 +57,30 @@ export class AuthService {
       );
   }
 
-  logout(): void {
+  public logout(): void {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('currentUser');
       localStorage.removeItem('boughtGames');
-      this.cachedGames.clear(); // Clear cache on logout
+      this.cachedGames.clear();
     }
     this.currentUserSubject.next(null);
   }
 
-  deleteAccount(userId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${userId}`).pipe(
+  public deleteAccount(userId: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/Users/${userId}`).pipe(
       tap(() => {
         this.logout();
       })
     );
   }
 
-  updateProfile(
+  public updateProfile(
     userId: string,
-    userData: Partial<UserDataBaseInterface>
+    userData: Partial<UserDataBaseInterface> | FormData
   ): Observable<UserDataBaseInterface> {
     return this.http
       .put<UserDataBaseInterface>(
-        `${this.apiUrl}/edit-profile/${userId}`,
+        `${this.baseUrl}/Users/edit-profile/${userId}`,
         userData
       )
       .pipe(
@@ -96,14 +93,14 @@ export class AuthService {
       );
   }
 
-  refreshUserData(updatedUser: UserDataBaseInterface) {
+  public refreshUserData(updatedUser: UserDataBaseInterface) {
     if (typeof window !== 'undefined') {
       localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     }
     this.currentUserSubject.next(updatedUser);
   }
 
-  uploadProfileImage(userId: string, file: File) {
+  public uploadProfileImage(userId: string, file: File) {
     const formData = new FormData();
     const currentUser = this.currentUserSubject.getValue();
 
@@ -120,7 +117,7 @@ export class AuthService {
 
     return this.http
       .put<UserDataBaseInterface>(
-        `${this.apiUrl}/edit-profile/${userId}`,
+        `${this.baseUrl}/Users/edit-profile/${userId}`,
         formData
       )
       .pipe(
@@ -130,7 +127,7 @@ export class AuthService {
       );
   }
 
-  fetchBoughtGames(gameIds: number[]) {
+  public fetchBoughtGames(gameIds: number[]) {
     const cacheKey = gameIds.sort().join(',');
     if (this.cachedGames.has(cacheKey)) {
       return of(this.cachedGames.get(cacheKey));

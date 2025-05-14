@@ -1,21 +1,19 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { AuthService } from '../../shared/services/auth.service';
-import { ChangeDetectionStrategy } from '@angular/core';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-account-list',
   templateUrl: './account-list.component.html',
-  styleUrl: './account-list.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./account-list.component.scss'],
 })
-export class AccountListComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = [
+export class AccountListComponent {
+  displayedColumns = [
     'profilePicture',
     'username',
     'email',
@@ -24,19 +22,14 @@ export class AccountListComponent implements OnInit, AfterViewInit {
     'joinedOn',
     'lastLogin',
     'roles',
-    'actions', // Add this new column
+    'actions',
   ];
-  dataSource: MatTableDataSource<UserDataBaseInterface>;
+  dataSource = new MatTableDataSource<UserDataBaseInterface>([]);
 
-  @ViewChild(MatSort)
-  sort!: MatSort;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  @ViewChild(MatPaginator)
-  paginator!: MatPaginator;
-
-  constructor(private http: HttpClient, private authService: AuthService) {
-    this.dataSource = new MatTableDataSource<UserDataBaseInterface>();
-  }
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -50,149 +43,97 @@ export class AccountListComponent implements OnInit, AfterViewInit {
   loadUsers(): void {
     this.http
       .get<UserDataBaseInterface[]>('https://localhost:7262/Users/all')
-      .subscribe({
-        next: (users) => {
-          this.dataSource.data = users;
-        },
-        error: (error) => {
-          console.error('Error fetching users:', error);
-        },
-      });
+      .subscribe((users) => (this.dataSource.data = users));
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  searchUsers(event: Event): void {
+    const searchValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = searchValue.trim().toLowerCase();
+    this.dataSource.paginator?.firstPage();
   }
 
-  getProfileImage(profilePicture: string): string {
-    if (!profilePicture || profilePicture === 'string') {
-      return 'https://localhost:7262/Images/default/user.jpg';
-    }
-    return this.authService.getFullImageUrl(profilePicture);
+  getProfileImage(image: string): string {
+    return image && image !== 'string'
+      ? this.authService.getFullImageUrl(image)
+      : 'https://localhost:7262/Images/default/user.jpg';
   }
 
-  toggleAdminStatus(userId: string, currentStatus: boolean): void {
-    const action = currentStatus ? 'remove' : 'grant';
-    Swal.fire({
-      title: `Are you sure?`,
-      text: `Do you want to ${action} admin privileges for this user?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.http
-          .patch(
-            `https://localhost:7262/Users/${userId}/set-admin-status`,
-            !currentStatus
-          )
-          .subscribe({
-            next: () => {
-              this.loadUsers();
-              Swal.fire({
-                title: 'Updated!',
-                text: `Admin privileges ${action}ed successfully`,
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false,
-              });
-            },
-            error: (error) => {
-              console.error('Error updating admin status:', error);
-              Swal.fire({
-                title: 'Error!',
-                text: 'Failed to update admin status',
-                icon: 'error',
-              });
-            },
-          });
-      }
-    });
-  }
-
-  toggleDeveloperStatus(userId: string, currentStatus: boolean): void {
-    const action = currentStatus ? 'remove' : 'grant';
-    Swal.fire({
-      title: `Are you sure?`,
-      text: `Do you want to ${action} developer privileges for this user?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.http
-          .patch(
-            `https://localhost:7262/Users/${userId}/set-developer-status`,
-            !currentStatus
-          )
-          .subscribe({
-            next: () => {
-              this.loadUsers();
-              Swal.fire({
-                title: 'Updated!',
-                text: `Developer privileges ${action}ed successfully`,
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false,
-              });
-            },
-            error: (error) => {
-              console.error('Error updating developer status:', error);
-              Swal.fire({
-                title: 'Error!',
-                text: 'Failed to update developer status',
-                icon: 'error',
-              });
-            },
-          });
-      }
-    });
-  }
-
-  deleteUser(userId: string, username: string): void {
-    Swal.fire({
+  async toggleAdminStatus(
+    userId: string,
+    currentStatus: boolean
+  ): Promise<void> {
+    const confirmed = await Swal.fire({
       title: 'Are you sure?',
-      text: `Do you want to delete the account for ${username}? This action cannot be undone!`,
+      text: `Do you want to ${
+        currentStatus ? 'remove' : 'grant'
+      } admin privileges?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'Cancel',
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.http.delete(`https://localhost:7262/Users/${userId}`).subscribe({
-          next: () => {
-            this.loadUsers();
-            Swal.fire({
-              title: 'Deleted!',
-              text: 'Account has been deleted successfully',
-              icon: 'success',
-              timer: 2000,
-              showConfirmButton: false,
-            });
-          },
-          error: (error) => {
-            console.error('Error deleting user:', error);
-            Swal.fire({
-              title: 'Error!',
-              text: 'Failed to delete account',
-              icon: 'error',
-            });
-          },
-        });
-      }
+      confirmButtonText: 'Yes',
     });
+
+    if (confirmed.isConfirmed) {
+      this.http
+        .patch(
+          `https://localhost:7262/Users/${userId}/set-admin-status`,
+          !currentStatus
+        )
+        .subscribe(() => {
+          this.loadUsers();
+          Swal.fire('Updated!', '', 'success');
+        });
+    }
+  }
+
+  async toggleDeveloperStatus(
+    userId: string,
+    currentStatus: boolean
+  ): Promise<void> {
+    const confirmed = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to ${
+        currentStatus ? 'remove' : 'grant'
+      } developer privileges?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes',
+    });
+
+    if (confirmed.isConfirmed) {
+      this.http
+        .patch(
+          `https://localhost:7262/Users/${userId}/set-developer-status`,
+          !currentStatus
+        )
+        .subscribe(() => {
+          this.loadUsers();
+          Swal.fire('Updated!', '', 'success');
+        });
+    }
+  }
+
+  async deleteUser(userId: string, username: string): Promise<void> {
+    const confirmed = await Swal.fire({
+      title: 'Delete user?',
+      text: `Delete ${username} permanently?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+    });
+
+    if (confirmed.isConfirmed) {
+      this.http
+        .delete(`https://localhost:7262/Users/${userId}`)
+        .subscribe(() => {
+          this.loadUsers();
+          Swal.fire('Deleted!', '', 'success');
+        });
+    }
   }
 }
