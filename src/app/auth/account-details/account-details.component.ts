@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
+import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -9,26 +10,34 @@ import Swal from 'sweetalert2';
   styleUrls: ['./account-details.component.scss'],
 })
 export class AccountDetailsComponent {
-  user: any;
+  user: UserDataBaseInterface | null = null;
   boughtGames: any[] = [];
 
   constructor(public authService: AuthService, private router: Router) {
     this.authService.currentUser$.subscribe((user) => {
       this.user = user;
-      this.loadBoughtGames();
+      if (
+        user &&
+        Array.isArray(user.boughtGames) &&
+        user.boughtGames.length > 0
+      ) {
+        this.loadBoughtGames(user.boughtGames);
+      } else {
+        this.boughtGames = [];
+      }
     });
   }
 
-  loadBoughtGames() {
-    const savedGames = localStorage.getItem('boughtGames');
-    if (savedGames) {
-      const gameIds = JSON.parse(savedGames);
-      if (gameIds.length > 0) {
-        this.authService.fetchBoughtGames(gameIds).subscribe((games) => {
-          this.boughtGames = games || [];
-        });
-      }
-    }
+  loadBoughtGames(gameIds: number[]) {
+    this.authService.fetchBoughtGames(gameIds).subscribe({
+      next: (response) => {
+        this.boughtGames = response.games || [];
+      },
+      error: (error) => {
+        console.error('Error loading games:', error);
+        this.boughtGames = [];
+      },
+    });
   }
 
   logout() {

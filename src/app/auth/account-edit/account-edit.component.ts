@@ -1,55 +1,94 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../shared/services/auth.service';
+import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account-edit',
   templateUrl: './account-edit.component.html',
-  styleUrls: ['./account-edit.component.scss'],
+  styleUrl: './account-edit.component.scss',
 })
-export class AccountEditComponent {
-  user: any;
+export class AccountEditComponent implements OnInit {
+  user?: UserDataBaseInterface;
+  isLoading = false;
+  error?: string;
   selectedFile?: File;
 
-  constructor(public authService: AuthService, private router: Router) {
+  constructor(public authService: AuthService, private router: Router) {}
+
+  formatDate(date: Date): string {
+    if (!date) return '';
+    return date.toISOString().split('T')[0];
+  }
+
+  onBirthDateChange(dateStr: string) {
+    if (this.user) {
+      this.user.birthDate = new Date(dateStr);
+    }
+  }
+
+  private ensureDate(date: Date | string | null | undefined): Date {
+    if (date instanceof Date) return date;
+    return date ? new Date(date) : new Date();
+  }
+
+  ngOnInit() {
     this.authService.currentUser$.subscribe((user) => {
       if (user) {
         this.user = {
           ...user,
-          birthDate: new Date(user.birthDate).toISOString().split('T')[0],
+          birthDate: this.ensureDate(user.birthDate),
         };
+      } else {
+        this.user = undefined;
       }
     });
   }
 
   onImageSelected(file: File) {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      this.error = 'Please select an image file';
+      return;
+    }
+
     this.selectedFile = file;
   }
 
-  updateProfile() {
-    if (this.user?.id) {
-      const formData = new FormData();
-
-      if (this.selectedFile) {
-        formData.append(
-          'profilePicture',
-          this.selectedFile,
-          this.selectedFile.name
-        );
-      }
-
-      formData.append('username', this.user.username);
-      formData.append('email', this.user.email);
-      formData.append('fullName', this.user.fullName);
-      formData.append('birthDate', this.user.birthDate);
-
-      this.authService.updateProfile(this.user.id, formData).subscribe(() => {
-        this.router.navigate(['/account/detail', this.user.id]);
-      });
+  onSubmit() {
+    if (!this.user || !this.user.id) {
+      this.error = 'User ID is missing';
+      return;
     }
+
+    this.isLoading = true;
+    this.error = undefined;
+
+    const formData = new FormData();
+
+    formData.append('Username', this.user.username);
+    formData.append('Email', this.user.email);
+    formData.append('FullName', this.user.fullName);
+
+    const birthDate = this.ensureDate(this.user.birthDate);
+    formData.append('BirthDate', birthDate.toISOString());
+
+    if (this.selectedFile) {
+      formData.append('ProfilePicture', this.selectedFile);
+    }
+
+    this.authService.updateProfile(this.user.id, formData).subscribe({
+      next: (updatedUser) => {
+        this.isLoading = false;
+        this.router.navigate(['/account/detail', this.user!.id]);
+      },
+    });
   }
 
   cancel() {
-    this.router.navigate(['/account/detail', this.user?.id || '']);
+    if (this.user?.id) {
+      this.router.navigate(['/account/detail', this.user.id]);
+    }
   }
 }

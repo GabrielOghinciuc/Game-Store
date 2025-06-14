@@ -21,6 +21,10 @@
               </span>
             </div>
           </div>
+          <h2 class="card-title" style="display: flex;">Rating avarange</h2> 
+           <p class="card-text">{{ game.rating }}/5</p>
+
+
   
           <div class="rating-section">
             <p class="rating">Rating:</p>
@@ -33,7 +37,7 @@
           
           <div class="price-section">
             <p class="original-price">Regular price: ${{ game.originalPrice }}</p>
-            <p *ngIf="game.discountedPrice && game.discountedPrice < game.originalPrice" class="discounted-price">
+            <p class="discounted-price">
               Sale price: ${{ game.discountedPrice }}
             </p>
             <button *ngIf="!isGameBought()" 
@@ -48,10 +52,10 @@
               <i class="bi bi-check-circle"></i>
               Already Bought
             </button>
-            <button class="btn btn-warning ms-2" (click)="navigateToEdit()">
+            <button *ngIf="currentUser?.isAdmin || currentUser?.isGameDeveloper" class="btn btn-warning ms-2" (click)="navigateToEdit()">
               <i class="bi bi-pencil"></i> Edit
             </button>
-            <button class="btn btn-danger ms-2" (click)="deleteGame()">
+            <button *ngIf="currentUser?.isAdmin || currentUser?.isGameDeveloper" class="btn btn-danger ms-2" (click)="deleteGame()">
               <i class="bi bi-trash"></i> Delete
             </button>
           </div>

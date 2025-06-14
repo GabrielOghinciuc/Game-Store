@@ -4,12 +4,10 @@ import { Game } from '../../shared/interfaces/game.model';
 import { HttpClient } from '@angular/common/http';
 import { GameUpdateService } from '../../shared/services/game-update.service';
 import Swal from 'sweetalert2';
-import { RatingComponent } from '../rating/rating.component';
 import { AuthService } from '../../shared/services/auth.service';
 import { CartService } from '../../shared/services/cart.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserDataBaseInterface } from '../../shared/interfaces/user-interface';
-
 @Component({
   selector: 'app-game-details',
   templateUrl: './game-details.component.html',
@@ -20,6 +18,7 @@ export class GameDetailsComponent implements OnInit {
   public hoverRating: number = 0;
   public isLoading: boolean = true;
   public error: string | null = null;
+  currentUser: UserDataBaseInterface | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -70,15 +69,21 @@ export class GameDetailsComponent implements OnInit {
   public setRating(rating: number): void {
     if (this.game) {
       this.http
-        .put(`https://localhost:7262/Games/${this.game.id}/rating`, { rating })
+        .post(`https://localhost:7262/Games/${this.game.id}/review`, { rating })
         .subscribe({
-          next: () => {
+          next: (response: any) => {
             if (this.game) {
-              this.game.rating = rating;
+              this.game.rating = response.averageRating;
+              this.loadGameDetails(this.game.id);
             }
           },
           error: (error) => {
             console.error('Error updating rating:', error);
+            this.snackBar.open('Failed to update rating', 'Close', {
+              duration: 2000,
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+            });
           },
         });
     }

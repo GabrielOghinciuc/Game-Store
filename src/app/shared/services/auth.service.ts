@@ -42,12 +42,6 @@ export class AuthService {
       .post<any>(`${this.baseUrl}/Users/login`, { email, password })
       .pipe(
         tap((response) => {
-          console.log('Full login response:', response);
-          const boughtGames =
-            response.boughtGames || response.user?.boughtGames || [];
-          console.log('Found bought games:', boughtGames);
-          localStorage.setItem('boughtGames', JSON.stringify(boughtGames));
-
           const userData = response.user || response;
           if (typeof window !== 'undefined') {
             localStorage.setItem('currentUser', JSON.stringify(userData));
@@ -60,7 +54,6 @@ export class AuthService {
   public logout(): void {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('currentUser');
-      localStorage.removeItem('boughtGames');
       this.cachedGames.clear();
     }
     this.currentUserSubject.next(null);
@@ -108,13 +101,6 @@ export class AuthService {
       formData.append('ProfilePicture', file);
     }
 
-    if (currentUser) {
-      formData.append('Username', currentUser.username);
-      formData.append('Email', currentUser.email);
-      formData.append('FullName', currentUser.fullName);
-      formData.append('BirthDate', currentUser.birthDate.toString());
-    }
-
     return this.http
       .put<UserDataBaseInterface>(
         `${this.baseUrl}/Users/edit-profile/${userId}`,
@@ -127,13 +113,12 @@ export class AuthService {
       );
   }
 
-  public fetchBoughtGames(gameIds: number[]) {
+  public fetchBoughtGames(gameIds: number[]): Observable<{ games: any[] }> {
     const cacheKey = gameIds.sort().join(',');
     if (this.cachedGames.has(cacheKey)) {
       return of(this.cachedGames.get(cacheKey));
     }
 
-    console.log('Fetching games with IDs:', gameIds);
     const safeGameIds = gameIds
       .map((id) => Number(id))
       .filter((id) => !isNaN(id));
@@ -143,14 +128,16 @@ export class AuthService {
     }
 
     return this.http
-      .post<any>(`${this.baseUrl}/Games/batch`, { gameIds: safeGameIds })
+      .post<{ games: any[] }>(`${this.baseUrl}/Games/batch`, {
+        gameIds: safeGameIds,
+      })
       .pipe(
         tap((response) => {
           this.cachedGames.set(cacheKey, response);
         }),
         catchError((error) => {
-          console.error('Error in fetchBoughtGames:', error);
-          return throwError(() => error);
+          console.error('Error fetching games:', error);
+          return of({ games: [] });
         })
       );
   }
