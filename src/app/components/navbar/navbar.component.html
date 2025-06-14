@@ -7,9 +7,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item" [class.active]="isActive('home')">
-        <a class="nav-link" routerLink="/">Home</a>
-      </li>
+      
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" routerLink="/games">Games</a>
       </li>     
@@ -26,10 +24,7 @@
                style="width: 32px; height: 32px; cursor: pointer;"
                (click)="navigateToProfile()"
                data-bs-toggle="dropdown">
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" [routerLink]="['/account/detail', currentUser.id]">Profile</a></li>
-            <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
-          </ul>
+          
         </div>
       </ng-container>
       <ng-template #loginButton>

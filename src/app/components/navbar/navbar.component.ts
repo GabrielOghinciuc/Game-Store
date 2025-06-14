@@ -65,10 +65,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  public isActive(route: string): boolean {
-    return this.router.url === `/${route}`;
-  }
-
   navigateToProfile(): void {
     if (this.currentUser?.id) {
       this.router.navigate(['/account/detail', this.currentUser.id]);
@@ -125,10 +121,5 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
 
     this.buttonText = 'Turn on Dark Mode';
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }
