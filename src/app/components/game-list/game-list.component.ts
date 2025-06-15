@@ -32,7 +32,6 @@ export class GameListComponent implements OnInit {
         next: (data) => {
           this.games = data.map((game) => ({
             ...game,
-            showFullDescription: false,
           }));
           this.gamesLoaded = true;
         },
