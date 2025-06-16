@@ -51,6 +51,7 @@ import { CartComponent } from './components/cart/cart.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
+import { DiscountComponent } from './components/discount/discount.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { MatListModule } from '@angular/material/list';
     AccountEditComponent,
     AccountListComponent,
     CartComponent,
+    DiscountComponent,
   ],
   imports: [
     BrowserModule,

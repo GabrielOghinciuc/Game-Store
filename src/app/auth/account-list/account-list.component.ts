@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./account-list.component.scss'],
 })
 export class AccountListComponent {
-  displayedColumns = [
+  public displayedColumns = [
     'profilePicture',
     'username',
     'email',
@@ -24,7 +24,7 @@ export class AccountListComponent {
     'roles',
     'actions',
   ];
-  dataSource = new MatTableDataSource<UserDataBaseInterface>([]);
+  public dataSource = new MatTableDataSource<UserDataBaseInterface>([]);
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -35,24 +35,24 @@ export class AccountListComponent {
     this.loadUsers();
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
 
-  loadUsers(): void {
+  public loadUsers(): void {
     this.http
       .get<UserDataBaseInterface[]>('https://localhost:7262/Users/all')
       .subscribe((users) => (this.dataSource.data = users));
   }
 
-  searchUsers(event: Event): void {
+  public searchUsers(event: Event): void {
     const searchValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = searchValue.trim().toLowerCase();
     this.dataSource.paginator?.firstPage();
   }
 
-  getProfileImage(image: string): string {
+  public getProfileImage(image: string): string {
     return image && image !== 'string'
       ? this.authService.getFullImageUrl(image)
       : 'https://localhost:7262/Images/default/user.jpg';

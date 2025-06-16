@@ -10,7 +10,7 @@ export class AdminGuard implements CanActivate {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  canActivate() {
+  public canActivate() {
     return this.authService.currentUser$.pipe(
       map((user) => {
         if (!user?.isAdmin) {

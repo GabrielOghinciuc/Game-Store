@@ -15,8 +15,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public darkMode = false;
   public buttonText = 'Turn on Dark Mode';
   public isScrolled = false;
-  currentUser: UserDataBaseInterface | null = null;
-  cartItemsCount: number = 0;
+  public currentUser: UserDataBaseInterface | null = null;
+  public cartItemsCount: number = 0;
   private cartSubscription: Subscription;
 
   constructor(
@@ -54,7 +54,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isScrolled = window.scrollY > 20;
   }
 
-  toggleDarkMode(): void {
+  public toggleDarkMode(): void {
     this.darkMode = !this.darkMode;
     if (this.darkMode) {
       localStorage.setItem('darkMode', 'true');
@@ -65,7 +65,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  navigateToProfile(): void {
+  public navigateToProfile(): void {
     if (this.currentUser?.id) {
       this.router.navigate(['/account/detail', this.currentUser.id]);
     }

@@ -9,19 +9,19 @@ import { Router } from '@angular/router';
   styleUrl: './account-edit.component.scss',
 })
 export class AccountEditComponent implements OnInit {
-  user?: UserDataBaseInterface;
-  isLoading = false;
-  error?: string;
-  selectedFile?: File;
+  public user?: UserDataBaseInterface;
+  public isLoading = false;
+  public error?: string;
+  public selectedFile?: File;
 
   constructor(public authService: AuthService, private router: Router) {}
 
-  formatDate(date: Date): string {
+  public formatDate(date: Date): string {
     if (!date) return '';
     return date.toISOString().split('T')[0];
   }
 
-  onBirthDateChange(dateStr: string) {
+  public onBirthDateChange(dateStr: string) {
     if (this.user) {
       this.user.birthDate = new Date(dateStr);
     }
@@ -45,7 +45,7 @@ export class AccountEditComponent implements OnInit {
     });
   }
 
-  onImageSelected(file: File) {
+  public onImageSelected(file: File) {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
@@ -56,7 +56,7 @@ export class AccountEditComponent implements OnInit {
     this.selectedFile = file;
   }
 
-  onSubmit() {
+  public onSubmit() {
     if (!this.user || !this.user.id) {
       this.error = 'User ID is missing';
       return;
@@ -86,7 +86,7 @@ export class AccountEditComponent implements OnInit {
     });
   }
 
-  cancel() {
+  public cancel() {
     if (this.user?.id) {
       this.router.navigate(['/account/detail', this.user.id]);
     }

@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required],
     });
   }
-  getEmailErrorMessage() {
+  public getEmailErrorMessage() {
     if (this.loginForm.get('email')?.hasError('required')) {
       return 'Email is required';
     }
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
   }
   ngOnInit(): void {}
 
-  onSubmit(): void {
+  public onSubmit(): void {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.authService.login(email, password).subscribe({

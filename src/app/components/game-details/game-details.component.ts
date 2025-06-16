@@ -18,7 +18,7 @@ export class GameDetailsComponent implements OnInit {
   public hoverRating: number = 0;
   public isLoading: boolean = true;
   public error: string | null = null;
-  currentUser: UserDataBaseInterface | null = null;
+  public currentUser: UserDataBaseInterface | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -123,7 +123,7 @@ export class GameDetailsComponent implements OnInit {
     });
   }
 
-  buyNow(): void {
+  public buyNow(): void {
     if (!this.game) {
       return;
     }
@@ -142,7 +142,7 @@ export class GameDetailsComponent implements OnInit {
     });
   }
 
-  isGameBought(): boolean {
+  public isGameBought(): boolean {
     const currentUser = this.authService.currentUserSubject.getValue();
     if (!currentUser || !currentUser.boughtGames || !this.game) {
       return false;

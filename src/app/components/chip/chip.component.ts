@@ -10,7 +10,7 @@ export class ChipComponent {
   @Input() selected: boolean = false;
   @Output() genreSelected = new EventEmitter<string>();
 
-  toggleSelection() {
+  public toggleSelection() {
     this.selected = !this.selected;
     this.genreSelected.emit(this.genre);
   }

@@ -28,11 +28,11 @@ export class CartComponent {
     this.showPaymentForm$ = this.cartService.showPaymentForm$;
   }
 
-  removeFromCart(gameId: number) {
+  public removeFromCart(gameId: number) {
     this.cartService.removeFromCart(gameId);
   }
 
-  checkout() {
+  public checkout() {
     if (!this.authService.currentUserSubject.getValue()) {
       this.router.navigate(['/login']);
       return;
@@ -40,7 +40,7 @@ export class CartComponent {
     this.cartService.setShowPaymentForm(true);
   }
 
-  submitPayment() {
+  public submitPayment() {
     if (this.isPaymentDataValid()) {
       const currentUser = this.authService.currentUserSubject.getValue();
 
@@ -59,7 +59,7 @@ export class CartComponent {
     }
   }
 
-  cancelPayment(): void {
+  public cancelPayment(): void {
     this.cartService.setShowPaymentForm(false);
     this.resetPaymentForm();
   }
@@ -76,7 +76,7 @@ export class CartComponent {
     );
   }
 
-  formatExpiryDate(event: any) {
+  public formatExpiryDate(event: any) {
     let value = event.target.value.replace(/\D/g, '');
     if (value.length > 2) {
       value = value.substring(0, 2) + '/' + value.substring(2, 4);

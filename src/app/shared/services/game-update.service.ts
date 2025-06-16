@@ -7,9 +7,9 @@ import { Subject } from 'rxjs';
 export class GameUpdateService {
   private gameUpdated = new Subject<number>();
 
-  gameUpdated$ = this.gameUpdated.asObservable();
+  public gameUpdated$ = this.gameUpdated.asObservable();
 
-  notifyGameUpdate(gameId: number) {
+  public notifyGameUpdate(gameId: number) {
     this.gameUpdated.next(gameId);
   }
 }

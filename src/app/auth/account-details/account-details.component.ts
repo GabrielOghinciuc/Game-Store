@@ -10,8 +10,8 @@ import Swal from 'sweetalert2';
   styleUrls: ['./account-details.component.scss'],
 })
 export class AccountDetailsComponent {
-  user: UserDataBaseInterface | null = null;
-  boughtGames: any[] = [];
+  public user: UserDataBaseInterface | null = null;
+  public boughtGames: any[] = [];
 
   constructor(public authService: AuthService, private router: Router) {
     this.authService.currentUser$.subscribe((user) => {
@@ -28,7 +28,7 @@ export class AccountDetailsComponent {
     });
   }
 
-  loadBoughtGames(gameIds: number[]) {
+  public loadBoughtGames(gameIds: number[]) {
     this.authService.fetchBoughtGames(gameIds).subscribe({
       next: (response) => {
         this.boughtGames = response.games || [];
@@ -40,7 +40,7 @@ export class AccountDetailsComponent {
     });
   }
 
-  logout() {
+  public logout() {
     Swal.fire({
       title: 'Logout?',
       text: 'Are you sure you want to logout?',
@@ -55,11 +55,11 @@ export class AccountDetailsComponent {
     });
   }
 
-  editProfile() {
+  public editProfile() {
     this.router.navigate(['/account/edit', this.user?.id]);
   }
 
-  deleteAccount() {
+  public deleteAccount() {
     Swal.fire({
       title: 'Delete Account?',
       text: 'This cannot be undone!',

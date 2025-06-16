@@ -14,7 +14,7 @@ import { AccountListComponent } from './auth/account-list/account-list.component
 import { CartComponent } from './components/cart/cart.component';
 import { AdminGuard } from './guards/admin.guard';
 import { GameDeveloperGuard } from './guards/game-developer.guard';
-
+import { DiscountComponent } from './components/discount/discount.component';
 const routes: Routes = [
   { path: '', component: GameListComponent },
   { path: 'home', component: GameListComponent },
@@ -32,6 +32,8 @@ const routes: Routes = [
     canActivate: [AdminGuard, GameDeveloperGuard],
   },
   { path: 'games', component: GamesComponent },
+  { path: 'discount', component: DiscountComponent },
+
   { path: 'account/detail/:id', component: AccountDetailsComponent },
   { path: 'account/edit/:id', component: AccountEditComponent },
   {

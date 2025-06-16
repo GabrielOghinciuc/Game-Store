@@ -16,21 +16,21 @@ export class CartService {
 
   constructor(private http: HttpClient) {}
 
-  addToCart(game: Game): void {
+  public addToCart(game: Game): void {
     const currentCart = this.shoppingCartState.value;
     if (!currentCart.some((item) => item.id === game.id)) {
       this.shoppingCartState.next([...currentCart, game]);
     }
   }
 
-  removeFromCart(gameId: number): void {
+  public removeFromCart(gameId: number): void {
     const updatedCart = this.shoppingCartState.value.filter(
       (item) => item.id !== gameId
     );
     this.shoppingCartState.next(updatedCart);
   }
 
-  savePurchasedGames(userId: string): Observable<any> {
+  public savePurchasedGames(userId: string): Observable<any> {
     const gameIds = this.shoppingCartState.value.map((game) => game.id);
     return this.http
       .post(`https://localhost:7262/Users/${userId}/add-games`, gameIds)
@@ -40,15 +40,15 @@ export class CartService {
       );
   }
 
-  clearCart(): void {
+  public clearCart(): void {
     this.shoppingCartState.next([]);
   }
 
-  setShowPaymentForm(show: boolean): void {
+  public setShowPaymentForm(show: boolean): void {
     this.showPaymentForm.next(show);
   }
 
-  getCartTotal(): number {
+  public getCartTotal(): number {
     return this.shoppingCartState.value.reduce(
       (total, game) => total + (game.discountedPrice || game.originalPrice),
       0

@@ -9,8 +9,8 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./game-add.component.scss'],
 })
 export class GameAddComponent {
-  gameForm: FormGroup;
-  isSubmitting = false;
+  public gameForm: FormGroup;
+  public isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
@@ -31,11 +31,11 @@ export class GameAddComponent {
     });
   }
 
-  onImageSelected(file: File) {
+  public onImageSelected(file: File) {
     this.gameForm.patchValue({ picture: file });
   }
 
-  onSubmit() {
+  public onSubmit() {
     if (this.gameForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
 
@@ -71,7 +71,7 @@ export class GameAddComponent {
     }
   }
 
-  resetForm() {
+  public resetForm() {
     this.gameForm.reset({
       rating: 5,
       discountedPrice: 0,

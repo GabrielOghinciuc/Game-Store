@@ -19,7 +19,7 @@ export class InputImgComponent {
   @Output()
   selectedFile = new EventEmitter<File>();
 
-  change(event: Event) {
+  public change(event: Event) {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {

@@ -9,11 +9,11 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './game-edit.component.scss',
 })
 export class GameEditComponent implements OnInit {
-  game: Game | undefined;
-  isLoading: boolean = true;
-  error: string | null = null;
-  platformsString: string = '';
-  selectedFile: File | null = null;
+  public game: Game | undefined;
+  public isLoading: boolean = true;
+  public error: string | null = null;
+  public platformsString: string = '';
+  public selectedFile: File | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,7 +42,7 @@ export class GameEditComponent implements OnInit {
     });
   }
 
-  updatePlatforms(): void {
+  public updatePlatforms(): void {
     if (this.game) {
       this.game.platforms = this.platformsString
         .split(',')
@@ -51,11 +51,11 @@ export class GameEditComponent implements OnInit {
     }
   }
 
-  onImageSelected(file: File): void {
+  public onImageSelected(file: File): void {
     this.selectedFile = file;
   }
 
-  onSubmit(): void {
+  public onSubmit(): void {
     if (!this.game) return;
 
     this.isLoading = true;

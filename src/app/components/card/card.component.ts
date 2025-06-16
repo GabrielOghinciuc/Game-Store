@@ -21,7 +21,7 @@ export class CardComponent {
     private snackBar: MatSnackBar
   ) {}
 
-  isGameBought(): boolean {
+  public isGameBought(): boolean {
     const currentUser = this.authService.currentUserSubject.getValue();
     if (!currentUser || !currentUser.boughtGames) {
       return false;
@@ -29,15 +29,15 @@ export class CardComponent {
     return currentUser.boughtGames.includes(this.game.id);
   }
 
-  toggleDescription(game: Game): void {
+  public toggleDescription(game: Game): void {
     game.showFullDescription = !game.showFullDescription;
   }
 
-  onDetailsClick(): void {
+  public onDetailsClick(): void {
     this.detailsClick.emit(this.game.id);
   }
 
-  buyNow(): void {
+  public buyNow(): void {
     const isLoggedIn = this.authService.currentUserSubject.getValue() !== null;
     if (!isLoggedIn) {
       this.router.navigate(['/login']);

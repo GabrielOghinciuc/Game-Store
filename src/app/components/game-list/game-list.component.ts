@@ -42,7 +42,7 @@ export class GameListComponent implements OnInit {
       });
   }
 
-  scrollToPopular() {
+  public scrollToPopular() {
     const indicator = document.querySelector('.drop-indicator') as HTMLElement;
     const target = document.querySelector('app-carousel') as HTMLElement;
 

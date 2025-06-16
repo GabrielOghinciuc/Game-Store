@@ -9,9 +9,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
-  registerForm!: FormGroup;
+  public registerForm!: FormGroup;
 
-  hidePassword = true;
+  public hidePassword = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -23,7 +23,7 @@ export class RegisterComponent implements OnInit {
     this.initializeForm();
   }
 
-  initializeForm(): void {
+  public initializeForm(): void {
     this.registerForm = this.formBuilder.group({
       username: ['', Validators.required],
       fullName: ['', Validators.required],
@@ -37,7 +37,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  getEmailErrorMessage(): string {
+  public getEmailErrorMessage(): string {
     const emailControl = this.registerForm.get('email');
 
     if (emailControl?.hasError('required')) {
@@ -51,14 +51,14 @@ export class RegisterComponent implements OnInit {
     return '';
   }
 
-  getFullNameErrorMessage(): string {
+  public getFullNameErrorMessage(): string {
     if (this.registerForm.get('fullName')?.hasError('required')) {
       return 'Full name is required';
     }
     return '';
   }
 
-  onSubmit(): void {
+  public onSubmit(): void {
     if (this.registerForm.valid) {
       this.registerUser();
     } else {

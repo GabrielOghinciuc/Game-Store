@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError, tap } from 'rxjs';
 import { UserDataBaseInterface } from '../interfaces/user-interface';
-import { isPlatformBrowser } from '@angular/common';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
